@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline } from '@mui/material'; /* 1. Add this for automatic styling */
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <CssBaseline />
+    <CssBaseline /> {/* 2. Add this for automatic styling */}
     <App />
   </React.StrictMode>
 );
