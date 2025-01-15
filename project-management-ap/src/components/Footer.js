@@ -1,11 +1,23 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
+import { Box, Button, Typography } from '@mui/material';
 
 function Footer() {
   return (
-    <div className="">
-        <Button variant="contained">Hello world</Button>
-    </div>
+    <Box
+      component="footer"
+      sx={{
+        width: '100%',
+        padding: '20px',
+        backgroundColor: '#3f51b5', // Or same as the grey background if needed
+        color: 'white',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        mt: 'auto', // Pushes footer down if content isn't tall enough
+      }}
+    >
+      <Typography variant="body1">Authors: Helmi Laakkonen, Pinja Kemppainen, Teemu Räisänen</Typography>
+    </Box>
   );
 }
 
