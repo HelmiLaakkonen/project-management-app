@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const router = require("./routes/index");
-
+const tasksRouter = require("./routes/tasks");
+const db = require("../db/connection");
 // Load env variables
 dotenv.config();
 
@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Use the routes
-app.use("api/", router);
+app.use("api/", tasksRouter);
 
 // Start the server
 app.listen(PORT, () => {
