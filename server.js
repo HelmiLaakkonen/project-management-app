@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Use the routes
-app.use("api/", tasksRouter);
+app.use("/api", tasksRouter);
 
 // Start the server
 app.listen(PORT, () => {
