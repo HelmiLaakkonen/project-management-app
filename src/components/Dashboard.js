@@ -1,8 +1,8 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Container, Box } from '@mui/material';
-import Sidebar from './SideBar'; // Assuming you have a Sidebar component
-import Calender from './Calender';
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import { Container, Box } from "@mui/material";
+import Sidebar from "./SideBar"; // Assuming you have a Sidebar component
+import Calender from "./Calender";
 
 function Home() {
   return (
@@ -16,7 +16,8 @@ function Home() {
 function Settings() {
   return (
     <Container>
-      <Box>      <Calender />
+      <Box>
+        <Calender />
       </Box>
     </Container>
   );
@@ -33,9 +34,9 @@ function Profile() {
 
 function Dashboard() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
       {/* Main Content with Sidebar and Routes */}
-      <Box sx={{ display: 'flex', flex: 1 }}>
+      <Box sx={{ display: "flex", flex: 1 }}>
         <Sidebar />
         <Routes>
           <Route path="/" element={<Home />} />
