@@ -1,6 +1,13 @@
-import React from 'react';
-import { Drawer, List, ListItem, ListItemText, Divider, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import React from "react";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Box,
+} from "@mui/material";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -10,9 +17,9 @@ function SideBar() {
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: drawerWidth,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
         },
       }}
       variant="permanent"
@@ -26,8 +33,8 @@ function SideBar() {
         <ListItem button component={Link} to="/">
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button component={Link} to="/settings">
-          <ListItemText primary="Settings" />
+        <ListItem button component={Link} to="/calender">
+          <ListItemText primary="Calender" />
         </ListItem>
         <ListItem button component={Link} to="/profile">
           <ListItemText primary="Profile" />

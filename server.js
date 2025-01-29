@@ -1,7 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const tasksRouter = require("./routes/tasks");
-const db = require("../db/connection");
+const calendarRouter = require("./routes/calendar");
+const db = require("./db/connection");
 // Load env variables
 dotenv.config();
 
