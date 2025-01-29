@@ -7,6 +7,7 @@ import Dashboard from './Dashboard';
 import Footer from './Footer';
 import Calender from './Calender';
 import Notifications from './Notifications';
+import Login from './Login';
 
 
 function App() {
