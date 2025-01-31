@@ -1,89 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateCalendar, PickersDay } from "@mui/x-date-pickers";
+import { DateCalendar } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import Badge from "@mui/material/Badge";
+import utc from "dayjs/plugin/utc";
 
-const hardcodedTasks = [
-  {
-    task_id: 1,
-    team_id: 1,
-    task_name: "Set Up Backend API",
-    description: "Create REST API endpoints for tasks",
-    due_date: "2025-01-30T18:00:00.000Z",
-    status: "completed",
-    created_at: "2025-01-25T14:30:00.000Z",
-  },
-  {
-    task_id: 2,
-    team_id: 1,
-    task_name: "Finish Calendar Feature",
-    description: "Implement calendar component in frontend",
-    due_date: "2025-01-31T22:00:00.000Z",
-    status: "pending",
-    created_at: "2025-01-29T10:10:13.000Z",
-  },
-  {
-    task_id: 3,
-    team_id: 2,
-    task_name: "Fix Role Assignment Bug",
-    description: "Debug and fix role assignment logic in Discord bot",
-    due_date: "2025-02-02T12:00:00.000Z",
-    status: "in-progress",
-    created_at: "2025-01-28T08:45:30.000Z",
-  },
-  {
-    task_id: 4,
-    team_id: 3,
-    task_name: "Optimize Database Queries",
-    description: "Improve performance of MySQL queries",
-    due_date: "2025-02-05T16:30:00.000Z",
-    status: "pending",
-    created_at: "2025-01-27T17:20:00.000Z",
-  },
-];
+dayjs.extend(utc); // Enable UTC handling
 
 function Calendar() {
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dayjs());
   const [tasks, setTasks] = useState([]);
-  const [markedDates, setMarkedDates] = useState(new Set());
 
   useEffect(() => {
-    // Directly set hardcoded tasks
-    setTasks(hardcodedTasks);
+    async function fetchTasks() {
+      try {
+        const response = await fetch("http://localhost:3000/api/tasks");
+        const data = await response.json();
+        console.log("Fetched Tasks:", data.tasks);
+        setTasks(data.tasks || []);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    }
 
-    // Extract due dates and store them in a Set for quick lookup
-    const taskDates = new Set(
-      hardcodedTasks.map((task) => dayjs(task.due_date).format("YYYY-MM-DD"))
-    );
-    setMarkedDates(taskDates);
+    fetchTasks();
   }, []);
 
-  // Handle date selection
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+  // Filter tasks for selected date using UTC comparison
+  const tasksForSelectedDate = tasks.filter((task) => {
+    const taskDate = dayjs.utc(task.due_date).format("YYYY-MM-DD"); // Treat as UTC
+    const selectedFormatted = selectedDate.format("YYYY-MM-DD"); // Local date for user selection
 
-  // Filter tasks for selected date
-  const tasksForSelectedDate = tasks.filter(
-    (task) =>
-      dayjs(task.due_date).format("YYYY-MM-DD") ===
-      selectedDate?.format("YYYY-MM-DD")
-  );
+    console.log(
+      `Comparing: Task(${taskDate}) === Selected(${selectedFormatted})`
+    );
+    return taskDate === selectedFormatted;
+  });
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div style={{ display: "flex", gap: "20px" }}>
         <DateCalendar
           value={selectedDate}
-          onChange={handleDateChange}
-          slots={{
-            day: (props) => <CustomDay {...props} markedDates={markedDates} />,
+          onChange={(date) => {
+            console.log("Selected date:", date.format("YYYY-MM-DD"));
+            setSelectedDate(date);
           }}
         />
+
         <div style={{ flex: 1 }}>
-          <h3>Tasks on {selectedDate?.format("YYYY-MM-DD") || "..."}</h3>
+          <h3>Tasks on {selectedDate.format("YYYY-MM-DD")}</h3>
           {tasksForSelectedDate.length > 0 ? (
             <ul>
               {tasksForSelectedDate.map((task) => (
@@ -98,19 +64,6 @@ function Calendar() {
         </div>
       </div>
     </LocalizationProvider>
-  );
-}
-
-// Custom Day Component to Highlight Dates with Tasks
-function CustomDay(props) {
-  const { day, markedDates, ...other } = props;
-  const formattedDate = day.format("YYYY-MM-DD");
-  const isMarked = markedDates.has(formattedDate);
-
-  return (
-    <Badge overlap="circular" badgeContent={isMarked ? "🔴" : null}>
-      <PickersDay {...other} day={day} />
-    </Badge>
   );
 }
 
