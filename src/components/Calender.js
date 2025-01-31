@@ -1,31 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
+import { DateCalendar, PickersDay } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import Badge from "@mui/material/Badge";
+
+const hardcodedTasks = [
+  {
+    task_id: 1,
+    team_id: 1,
+    task_name: "Set Up Backend API",
+    description: "Create REST API endpoints for tasks",
+    due_date: "2025-01-30T18:00:00.000Z",
+    status: "completed",
+    created_at: "2025-01-25T14:30:00.000Z",
+  },
+  {
+    task_id: 2,
+    team_id: 1,
+    task_name: "Finish Calendar Feature",
+    description: "Implement calendar component in frontend",
+    due_date: "2025-01-31T22:00:00.000Z",
+    status: "pending",
+    created_at: "2025-01-29T10:10:13.000Z",
+  },
+  {
+    task_id: 3,
+    team_id: 2,
+    task_name: "Fix Role Assignment Bug",
+    description: "Debug and fix role assignment logic in Discord bot",
+    due_date: "2025-02-02T12:00:00.000Z",
+    status: "in-progress",
+    created_at: "2025-01-28T08:45:30.000Z",
+  },
+  {
+    task_id: 4,
+    team_id: 3,
+    task_name: "Optimize Database Queries",
+    description: "Improve performance of MySQL queries",
+    due_date: "2025-02-05T16:30:00.000Z",
+    status: "pending",
+    created_at: "2025-01-27T17:20:00.000Z",
+  },
+];
 
 function Calendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [markedDates, setMarkedDates] = useState([]);
+  const [markedDates, setMarkedDates] = useState(new Set());
 
-  // Fetch tasks from backend
   useEffect(() => {
-    async function fetchTasks() {
-      try {
-        const response = await fetch("/api/tasks");
-        const data = await response.json();
-        setTasks(data.tasks);
+    // Directly set hardcoded tasks
+    setTasks(hardcodedTasks);
 
-        // Extract due dates for marking on calendar
-        const taskDates = data.tasks.map((task) => task.due_date);
-        setMarkedDates(taskDates);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-      }
-    }
-
-    fetchTasks();
+    // Extract due dates and store them in a Set for quick lookup
+    const taskDates = new Set(
+      hardcodedTasks.map((task) => dayjs(task.due_date).format("YYYY-MM-DD"))
+    );
+    setMarkedDates(taskDates);
   }, []);
 
   // Handle date selection
@@ -35,12 +67,10 @@ function Calendar() {
 
   // Filter tasks for selected date
   const tasksForSelectedDate = tasks.filter(
-    (task) => task.due_date === selectedDate?.format("YYYY-MM-DD")
+    (task) =>
+      dayjs(task.due_date).format("YYYY-MM-DD") ===
+      selectedDate?.format("YYYY-MM-DD")
   );
-
-  // Highlight marked dates
-  const isDateMarked = (date) =>
-    markedDates.includes(date.format("YYYY-MM-DD"));
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -48,25 +78,9 @@ function Calendar() {
         <DateCalendar
           value={selectedDate}
           onChange={handleDateChange}
-          renderDay={(day, _value, DayComponentProps) => (
-            <div style={{ position: "relative" }}>
-              <DayComponentProps.Day {...DayComponentProps} />
-              {isDateMarked(day) && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 4,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: 4,
-                    height: 4,
-                    borderRadius: "50%",
-                    backgroundColor: "red",
-                  }}
-                />
-              )}
-            </div>
-          )}
+          slots={{
+            day: (props) => <CustomDay {...props} markedDates={markedDates} />,
+          }}
         />
         <div style={{ flex: 1 }}>
           <h3>Tasks on {selectedDate?.format("YYYY-MM-DD") || "..."}</h3>
@@ -84,6 +98,19 @@ function Calendar() {
         </div>
       </div>
     </LocalizationProvider>
+  );
+}
+
+// Custom Day Component to Highlight Dates with Tasks
+function CustomDay(props) {
+  const { day, markedDates, ...other } = props;
+  const formattedDate = day.format("YYYY-MM-DD");
+  const isMarked = markedDates.has(formattedDate);
+
+  return (
+    <Badge overlap="circular" badgeContent={isMarked ? "🔴" : null}>
+      <PickersDay {...other} day={day} />
+    </Badge>
   );
 }
 
