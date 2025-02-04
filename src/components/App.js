@@ -1,24 +1,25 @@
-import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Sidebar from './SideBar';
 import NavBar from './NavBar';
 import Dashboard from './Dashboard';
+import Profile from './Profile';
 import Footer from './Footer';
-import Calender from './Calender';
-import Notifications from './Notifications';
-
 
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <Router>
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* Sidebar and Main Content */}
+        <NavBar sidebarOpen={sidebarOpen} />
         <Box sx={{ display: 'flex', flex: 1 }}>
-
-          <Sidebar />
-          {          /* <Notifications/>*/
-          }
+          <Sidebar open={sidebarOpen} toggleDrawer={toggleSidebar} />
           <Box
             component="main"
             sx={{
@@ -29,8 +30,10 @@ function App() {
               flexDirection: 'column',
             }}
           >
-            <NavBar />
-            <Dashboard />
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
             <Footer />
           </Box>
         </Box>
