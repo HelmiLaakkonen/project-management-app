@@ -61,7 +61,7 @@ function User() {
   }, []); // Empty dependency array to run only once when the component is mounted
 
   return (
-    <div>
+    <Container>
       <h2>Username</h2>
       {loading ? (
         <p>Loading...</p>
@@ -70,7 +70,7 @@ function User() {
       ) : (
         <p>{username}</p> // Display the username if successfully fetched
       )}
-    </div>
+    </Container>
   );
 }
 

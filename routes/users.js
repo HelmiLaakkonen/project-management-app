@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db/connection'); // Make sure the path to your connection file is correct
+const db = require('../db/connection');
 
 router.get('/', (req, res) => {
     console.log('GET request to /users route received')
@@ -17,7 +17,6 @@ router.get('/', (req, res) => {
             return res.status(404).json({ message: 'No users found' });
         }
 
-        // Send the first user's username from the database
         console.log('Fetched username:', results[0].username);
         res.json(results); // Return data as JSON
     });
