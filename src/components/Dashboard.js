@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Container, Box } from '@mui/material';
 import Sidebar from './SideBar'; // Assuming you have a Sidebar component
 import Calender from './Calender';
+import Login from './Login';
 import axios from 'axios';
 
 function Home() {
@@ -32,47 +33,46 @@ function Profile() {
   );
 }
 
-function User() {
-  const [username, setUsername] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // For handling errors
+// function User() {
+//   const [username, setUsername] = useState('');
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null); // For handling errors
 
-  useEffect(() => {
-    // Assuming your backend is running on http://localhost:5000
-    axios.get('http://localhost:3000/users') // Make the GET request to the /users route
-      .then((response) => {
-        // Assuming the backend returns the username in the response body
-        setUsername(response.data[0].username); // Set the username from the backend response
-        setLoading(false); // Update loading state
-      })
-      .catch((err) => {
-        // Log the error for debugging
-        console.error('Error fetching username:', err);
+//   useEffect(() => {
+//     axios.get('http://localhost:3000/users') // Make the GET request to the /users route
+//       .then((response) => {
+//         // Assuming the backend returns the username in the response body
+//         setUsername(response.data[0].username); // Set the username from the backend response
+//         setLoading(false); // Update loading state
+//       })
+//       .catch((err) => {
+//         // Log the error for debugging
+//         console.error('Error fetching username:', err);
 
-        // Check if the error is related to database connection failure
-        if (err.message.includes('ECONNREFUSED') || err.message.includes('connect ECONNREFUSED')) {
-          setError('Could not connect to the database. Please check your connection.');
-        } else {
-          setError('Error fetching username. Please try again later.');
-        }
+//         // Check if the error is related to database connection failure
+//         if (err.message.includes('ECONNREFUSED') || err.message.includes('connect ECONNREFUSED')) {
+//           setError('Could not connect to the database. Please check your connection.');
+//         } else {
+//           setError('Error fetching username. Please try again later.');
+//         }
 
-        setLoading(false); // Update loading state
-      });
-  }, []); // Empty dependency array to run only once when the component is mounted
+//         setLoading(false); // Update loading state
+//       });
+//   }, []); // Empty dependency array to run only once when the component is mounted
 
-  return (
-    <Container>
-      <h2>Username</h2>
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p>{error}</p> // Show error message if there was an issue
-      ) : (
-        <p>{username}</p> // Display the username if successfully fetched
-      )}
-    </Container>
-  );
-}
+//   return (
+//     <Container>
+//       <h2>Username</h2>
+//       {loading ? (
+//         <p>Loading...</p>
+//       ) : error ? (
+//         <p>{error}</p> // Show error message if there was an issue
+//       ) : (
+//         <p>{username}</p> // Display the username if successfully fetched
+//       )}
+//     </Container>
+//   );
+// }
 
 function Dashboard() {
   return (
@@ -82,9 +82,10 @@ function Dashboard() {
         <Sidebar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/user" element={<User />} />
+          {/* <Route path="/user" element={<User />} /> */}
         </Routes>
       </Box>
     </Box>
