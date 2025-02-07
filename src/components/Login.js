@@ -27,7 +27,10 @@ function Login({ setAuth }) {
     .then((data) => {
       if (data.token) {
         localStorage.setItem('token', data.token);
-        setAuth(true);
+        setAuth(true);  // Update authentication state
+        console.log('token');
+        // Redirect to the dashboard after successful login
+        navigate('/dashboard');  // Navigate to dashboard page
       } else {
         if (data.message === 'Invalid username or password') {
           setError('The username or password you entered is incorrect.');

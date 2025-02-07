@@ -23,9 +23,6 @@ function SideBar() {
       </Box>
       <Divider />
       <List>
-      <ListItem button component={Link} to="/login">
-          <ListItemText primary="Login" />
-        </ListItem>
         <ListItem button component={Link} to="/">
           <ListItemText primary="Home" />
         </ListItem>
@@ -34,6 +31,9 @@ function SideBar() {
         </ListItem>
         <ListItem button component={Link} to="/profile">
           <ListItemText primary="Profile" />
+        </ListItem>
+        <ListItem button component={Link} to="/calender">
+          <ListItemText primary="Calender" />
         </ListItem>
         
       </List>

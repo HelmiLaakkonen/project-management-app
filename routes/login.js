@@ -47,6 +47,7 @@ router.post('/', (req, res) => {
             res.json({
                 message: 'Login successful',
                 token: token, // Send the token to the client
+                
             });
         });
     });

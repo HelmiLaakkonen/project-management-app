@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 function Register({ setAuth }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
   
   const handleRegister = (e) => {
     e.preventDefault();
@@ -31,6 +33,9 @@ function Register({ setAuth }) {
     });
   };
 
+  const handleLoginRedirect = () => {
+    navigate('/login'); // Use navigate to redirect to /register
+  };
   return (
     <Container component="main" maxWidth="xs">
       <Paper elevation={6} sx={{ padding: 3 }}>
@@ -69,7 +74,15 @@ function Register({ setAuth }) {
           <Button type="submit" variant="contained" fullWidth>
             Register
           </Button>
+          
         </form>
+        <Button
+            variant="outlined"
+            fullWidth
+            onClick={handleLoginRedirect}
+            >
+            Login
+            </Button>
       </Paper>
     </Container>
   );
