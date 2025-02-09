@@ -30,7 +30,7 @@ function SideBar({ open, toggleDrawer }) {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
-            bgcolor: '#ffe9ec',
+            bgcolor: '#edfffb', //'#ffeded',
             transition: 'width 0.3s ease', // Add transition for smooth drawer open/close
           },
         }}

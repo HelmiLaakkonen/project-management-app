@@ -8,7 +8,7 @@ function Footer() {
       sx={{
         width: '100%',
         padding: '20px',
-        backgroundColor: '#dda0dd ', // Or same as the grey background if needed
+        backgroundColor: '#f5d4ff', // Or same as the grey background if needed
         color: 'white',
         display: 'flex',
         justifyContent: 'flex-end',

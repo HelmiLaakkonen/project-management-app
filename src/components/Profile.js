@@ -73,7 +73,7 @@ function Profile() {
         />
         <Button
           variant="contained"
-          color="primary"
+          color="ChangePasswordButton"
           sx={{ marginTop: 2 }}
           onClick={handlePasswordChange}
         >
@@ -82,7 +82,7 @@ function Profile() {
       </Box>
       <Button
         variant="contained"
-        color="error"
+        color="DeleteButton"
         sx={{ marginTop: 3 }}
         onClick={handleDeleteAccount}
       >

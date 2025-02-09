@@ -6,7 +6,7 @@ function NavBar({ sidebarOpen }) {
     <AppBar 
       position="sticky" 
       sx={{ 
-        bgcolor: '#dda0dd',
+        bgcolor: '#ffebf5',
         marginLeft: sidebarOpen ? '240px' : '0',
         width: sidebarOpen ? `calc(100% - 240px)` : '100%',
         transition: 'margin 0.3s ease, width 0.3s ease',
