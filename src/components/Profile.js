@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Snackbar, IconButton } from '@mui/material';
+import { Box, Typography, TextField, Button, Snackbar, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 function Profile() {
@@ -9,6 +9,7 @@ function Profile() {
   const [newPassword, setNewPassword] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [error, setError] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handlePasswordChange = () => {
     if (!currentPassword || !newPassword) {
@@ -31,9 +32,18 @@ function Profile() {
     setSnackbarOpen(false);
   };
 
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   const handleDeleteAccount = () => {
     // Implement delete account logic here
     console.log('Account deleted');
+    setDialogOpen(false);
   };
 
   return (
@@ -74,7 +84,7 @@ function Profile() {
         <Button
           variant="contained"
           color="ChangePasswordButton"
-          sx={{ marginTop: 2 }}
+          sx={{ marginTop: 3, color: 'white' }}
           onClick={handlePasswordChange}
         >
           Change Password
@@ -83,8 +93,8 @@ function Profile() {
       <Button
         variant="contained"
         color="DeleteButton"
-        sx={{ marginTop: 3 }}
-        onClick={handleDeleteAccount}
+        sx={{ marginTop: 3, color: 'white' }}
+        onClick={handleDialogOpen}
       >
         Delete Account
       </Button>
@@ -99,6 +109,25 @@ function Profile() {
           </IconButton>
         }
       />
+      <Dialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+      >
+        <DialogTitle>Delete Your Account</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete your account?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteAccount} color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

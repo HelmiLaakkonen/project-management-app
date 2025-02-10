@@ -13,10 +13,10 @@ function NavBar({ sidebarOpen }) {
       }}
     >
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" sx={{ flexGrow: 1, paddingLeft: sidebarOpen ? '0' : '48px', color: '#99c4e0' }}>
           Dashboard
         </Typography>
-        <Button color="inherit">Logout</Button>
+        <Button color="inherit" sx={{ color: 'black' }}>Logout</Button>
       </Toolbar>
     </AppBar>
   );

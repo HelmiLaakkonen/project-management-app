@@ -13,11 +13,15 @@ function SideBar({ open, toggleDrawer }) {
         onClick={toggleDrawer} 
         sx={{ 
           position: 'absolute', 
-          top: 16, 
+          top: 11, 
           left: 16, 
           zIndex: 1300,
           transition: 'transform 0.3s ease', // Add transition for smooth icon change
           transform: open ? 'rotate(180deg)' : 'rotate(0deg)', // Rotate icon when open
+          color: 'pink', // Set the icon color to pink
+          '&:hover': {
+            boxShadow: '0 0 10px lightpink', // Set the shadow color to light pink on hover
+          },
         }}
       >
         {open ? <CloseIcon /> : <MenuIcon />}
@@ -30,7 +34,7 @@ function SideBar({ open, toggleDrawer }) {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
-            bgcolor: '#edfffb', //'#ffeded',
+            bgcolor: '#edfffb',
             transition: 'width 0.3s ease', // Add transition for smooth drawer open/close
           },
         }}
@@ -38,19 +42,19 @@ function SideBar({ open, toggleDrawer }) {
         anchor="left"
         open={open}
       >
-        <Box sx={{ padding: 2 }}>
+        <Box sx={{ padding: 2, marginTop: 4, color: '#f097b2' }}>
           <h2>Dashboard</h2>
         </Box>
         <Divider />
         <List>
           <ListItem button component={Link} to="/" onClick={toggleDrawer}>
-            <ListItemText primary="Home" />
+            <ListItemText primary="Home" sx={{ color: '#f097b2' }} />
           </ListItem>
           <ListItem button component={Link} to="/settings" onClick={toggleDrawer}>
-            <ListItemText primary="Settings" />
+            <ListItemText primary="Settings" sx={{ color: '#f097b2' }} />
           </ListItem>
           <ListItem button component={Link} to="/profile" onClick={toggleDrawer}>
-            <ListItemText primary="Profile" />
+            <ListItemText primary="Profile" sx={{ color: '#f097b2' }} />
           </ListItem>
         </List>
       </Drawer>
