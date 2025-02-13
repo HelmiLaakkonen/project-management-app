@@ -6,6 +6,7 @@ const registerRouter = require("./routes/register");
 const bodyParser = require('body-parser');
 const db = require("./db/connection");
 const cors = require('cors');
+const tasksRouter = require("./routes/tasks");
 
 
 // Load env variables
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use('/login', loginRouter);
 app.use('/users', usersRouter);
 app.use('/register', registerRouter);
+app.use("/api", tasksRouter);
 
 console.log('Server is running...');
 
