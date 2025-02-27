@@ -33,7 +33,7 @@ function Layout({ children }) {
           component="main"
           sx={{
             flexGrow: 1,
-            bgcolor: "#f5f5f5",
+            bgcolor: "#fdfded",
             padding: 3,
             display: "flex",
             flexDirection: "column",

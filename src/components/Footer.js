@@ -11,7 +11,9 @@ function Footer() {
         bottom: 0,
         left: 0,
         backgroundColor: "#f8bbd0", // Pastel pink
-        color: "black", // Adjusted for better contrast
+        color: "white",
+        display: 'flex',
+        justifyContent: 'flex-end',
         textAlign: "center",
         padding: "10px 0",
       }}
