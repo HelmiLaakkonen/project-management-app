@@ -15,6 +15,7 @@ import Notifications from "./Notifications";
 import Footer from "./Footer";
 import Register from "./Register";
 import Login from "./Login";
+import Profile from './Profile';
 
 // Layout component with a sticky footer
 function Layout({ children }) {
@@ -125,6 +126,18 @@ function App() {
           isAuthenticated ? (
             <Layout>
               <Notifications />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          isAuthenticated ? (
+            <Layout>
+              <Profile />
             </Layout>
           ) : (
             <Navigate to="/login" />
