@@ -1,5 +1,5 @@
 ### 📌 **README.md**
-```md
+```
 # 🎀 Project Management App
 
 A **pastel-themed** project management application built using **React**, **Material UI**, and **Drag and Drop** functionality. This application helps teams organize tasks in a **Kanban Board**, track project progress, and manage schedules using an interactive **calendar**.
@@ -23,12 +23,12 @@ cd project-management-app
 ```
 
 ### **2️⃣ Install Dependencies**
-```bash
+```
 npm install
 ```
 
 ### **3️⃣ Start the Development Server**
-```bash
+```
 npm run dev
 ```
 📌 The app should now be running on **http://localhost:3000/** (or another available port).
