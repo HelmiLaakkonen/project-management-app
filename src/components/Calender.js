@@ -4,9 +4,14 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { Container, Box, Typography, Paper } from "@mui/material";
+import { Container, Box, Typography, Paper, Divider } from "@mui/material";
 
 dayjs.extend(utc); // Enable UTC handling
+
+// Load custom Google Font
+const fontStyle = {
+  fontFamily: `"Poppins", sans-serif`, // Elegant, rounded font
+};
 
 function Calendar() {
   const [selectedDate, setSelectedDate] = useState(dayjs());
@@ -31,7 +36,6 @@ function Calendar() {
   const tasksForSelectedDate = tasks.filter((task) => {
     const taskDate = dayjs.utc(task.due_date).format("YYYY-MM-DD"); // Treat as UTC
     const selectedFormatted = selectedDate.format("YYYY-MM-DD"); // Local date for user selection
-
     return taskDate === selectedFormatted;
   });
 
@@ -42,14 +46,25 @@ function Calendar() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        minHeight: "80vh", // Keeps it centered
-        paddingTop: 4,
+        justifyContent: "flex-start",
+        minHeight: "80vh",
+        paddingTop: 2,
+        mt: -5,
       }}
     >
       <Paper
-        elevation={3}
-        sx={{ padding: 3, width: "100%", maxWidth: "500px" }}
+        elevation={4}
+        sx={{
+          padding: 4,
+          width: "100%",
+          maxWidth: "700px", // Increased width slightly
+          height: "680px", // Slightly taller for better balance
+          display: "flex",
+          flexDirection: "column",
+          borderRadius: "20px", // Rounded edges
+          backgroundColor: "#fff5f8", // Soft pastel pink background
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Soft elegant shadow
+        }}
       >
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box
@@ -57,28 +72,80 @@ function Calendar() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 3,
+              flexGrow: 1,
             }}
           >
-            <DateCalendar
-              value={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-            />
+            {/* Calendar Section */}
+            <Box sx={{ flexShrink: 0 }}>
+              <DateCalendar
+                value={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
+                sx={{
+                  "& .MuiPickersDay-root": {
+                    fontSize: "1rem",
+                    fontWeight: "600",
+                    color: "#333", // Darker for better contrast
+                    fontFamily: `"Poppins", sans-serif`,
+                  },
+                  "& .MuiPickersDay-today": {
+                    backgroundColor: "#ffb6c1", // Light pink for today's date
+                    color: "white",
+                  },
+                  "& .MuiPickersDay-selected": {
+                    backgroundColor: "#ff85a2 !important", // More vibrant pink for selection
+                  },
+                }}
+              />
+            </Box>
 
-            <Box sx={{ width: "100%" }}>
-              <Typography variant="h6" align="center">
+            <Divider sx={{ width: "100%", my: 2 }} />
+
+            {/* Task List Section */}
+            <Box
+              sx={{
+                flexGrow: 1,
+                overflowY: "auto",
+                width: "100%",
+                maxHeight: "250px",
+              }}
+            >
+              <Typography
+                variant="h5"
+                align="center"
+                sx={{ fontWeight: "bold", color: "#d63384", ...fontStyle }}
+              >
                 Tasks on {selectedDate.format("YYYY-MM-DD")}
               </Typography>
               {tasksForSelectedDate.length > 0 ? (
-                <ul>
+                <ul
+                  style={{
+                    padding: "10px",
+                    fontSize: "1.1rem",
+                    lineHeight: "1.8",
+                    ...fontStyle,
+                  }}
+                >
                   {tasksForSelectedDate.map((task) => (
-                    <li key={task.task_id}>
-                      <strong>{task.task_name}</strong> - {task.description}
+                    <li key={task.task_id} style={{ paddingBottom: "5px" }}>
+                      <strong style={{ color: "#b80d57" }}>
+                        {task.task_name}
+                      </strong>{" "}
+                      - {task.description}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <Typography align="center">No tasks for this date.</Typography>
+                <Typography
+                  align="center"
+                  sx={{
+                    fontSize: "1.2rem",
+                    color: "#666",
+                    fontStyle: "italic",
+                    ...fontStyle,
+                  }}
+                >
+                  No tasks for this date.
+                </Typography>
               )}
             </Box>
           </Box>
