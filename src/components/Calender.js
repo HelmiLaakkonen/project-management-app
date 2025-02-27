@@ -4,6 +4,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { Container, Box, Typography, Paper } from "@mui/material";
 
 dayjs.extend(utc); // Enable UTC handling
 
@@ -31,39 +32,59 @@ function Calendar() {
     const taskDate = dayjs.utc(task.due_date).format("YYYY-MM-DD"); // Treat as UTC
     const selectedFormatted = selectedDate.format("YYYY-MM-DD"); // Local date for user selection
 
-    console.log(
-      `Comparing: Task(${taskDate}) === Selected(${selectedFormatted})`
-    );
     return taskDate === selectedFormatted;
   });
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div style={{ display: "flex", gap: "20px" }}>
-        <DateCalendar
-          value={selectedDate}
-          onChange={(date) => {
-            console.log("Selected date:", date.format("YYYY-MM-DD"));
-            setSelectedDate(date);
-          }}
-        />
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "80vh", // Keeps it centered
+        paddingTop: 4,
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{ padding: 3, width: "100%", maxWidth: "500px" }}
+      >
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 3,
+            }}
+          >
+            <DateCalendar
+              value={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+            />
 
-        <div style={{ flex: 1 }}>
-          <h3>Tasks on {selectedDate.format("YYYY-MM-DD")}</h3>
-          {tasksForSelectedDate.length > 0 ? (
-            <ul>
-              {tasksForSelectedDate.map((task) => (
-                <li key={task.task_id}>
-                  <strong>{task.task_name}</strong> - {task.description}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No tasks for this date.</p>
-          )}
-        </div>
-      </div>
-    </LocalizationProvider>
+            <Box sx={{ width: "100%" }}>
+              <Typography variant="h6" align="center">
+                Tasks on {selectedDate.format("YYYY-MM-DD")}
+              </Typography>
+              {tasksForSelectedDate.length > 0 ? (
+                <ul>
+                  {tasksForSelectedDate.map((task) => (
+                    <li key={task.task_id}>
+                      <strong>{task.task_name}</strong> - {task.description}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <Typography align="center">No tasks for this date.</Typography>
+              )}
+            </Box>
+          </Box>
+        </LocalizationProvider>
+      </Paper>
+    </Container>
   );
 }
 
