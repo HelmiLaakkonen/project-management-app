@@ -1,23 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Box } from '@mui/material';
-import Sidebar from './SideBar';
-import NavBar from './NavBar';
-import Dashboard from './Dashboard';
-import Calender from './Calender'; 
-import Notifications from './Notifications';
-import Footer from './Footer';
-import Register from './Register';
-import Login from './Login';
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { Box } from "@mui/material";
+import Sidebar from "./SideBar";
+import NavBar from "./NavBar";
+import Dashboard from "./Dashboard";
+import Calender from "./Calender";
+import Notifications from "./Notifications";
+import Footer from "./Footer";
+import Register from "./Register";
+import Login from "./Login";
 
-// Layout component
+// Layout component with a sticky footer
 function Layout({ children }) {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Box sx={{ display: 'flex', flex: 1 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
+      <NavBar />
+      <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Sidebar />
-        <Box component="main" sx={{ flexGrow: 1, bgcolor: '#f5f5f5', padding: 3, display: 'flex', flexDirection: 'column' }}>
-          {/* <NavBar /> */}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            bgcolor: "#f5f5f5",
+            padding: 3,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "calc(100vh - 64px - 40px)", // Adjust for navbar & footer height
+          }}
+        >
           {children}
         </Box>
       </Box>
@@ -27,25 +51,24 @@ function Layout({ children }) {
 }
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
   const location = useLocation();
 
-  // Re-check auth state when location changes
   useEffect(() => {
-    setIsAuthenticated(!!localStorage.getItem('token'));
-    console.log('Auth state updated on route change:', !!localStorage.getItem('token'));
+    setIsAuthenticated(!!localStorage.getItem("token"));
   }, [location]);
 
-  // Listen for token changes in localStorage (login/logout)
   useEffect(() => {
     const handleStorageChange = () => {
-      setIsAuthenticated(!!localStorage.getItem('token'));
+      setIsAuthenticated(!!localStorage.getItem("token"));
     };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
+
+    window.addEventListener("storage", handleStorageChange);
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -55,13 +78,64 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={!isAuthenticated ? <Navigate to="/login" /> : <Navigate to="/dashboard" />} />
+      <Route
+        path="/"
+        element={
+          !isAuthenticated ? (
+            <Navigate to="/login" />
+          ) : (
+            <Navigate to="/dashboard" />
+          )
+        }
+      />
       <Route path="/login" element={<Login setAuth={setIsAuthenticated} />} />
-      <Route path="/register" element={<Register setAuth={setIsAuthenticated} />} />
-      <Route path="/dashboard" element={isAuthenticated ? <Layout><NavBar setAuth={setIsAuthenticated} /><Dashboard /></Layout> : <Navigate to="/login" />} />
-      <Route path="/calender" element={isAuthenticated ? <Layout><Calender /></Layout> : <Navigate to="/login" />} />
-      <Route path="/notifications" element={isAuthenticated ? <Layout><Notifications /></Layout> : <Navigate to="/login" />} />
-      <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
+      <Route
+        path="/register"
+        element={<Register setAuth={setIsAuthenticated} />}
+      />
+
+      {/* Wrap all authenticated pages in Layout */}
+      <Route
+        path="/dashboard"
+        element={
+          isAuthenticated ? (
+            <Layout>
+              <Dashboard />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/calender"
+        element={
+          isAuthenticated ? (
+            <Layout>
+              <Calender />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/notifications"
+        element={
+          isAuthenticated ? (
+            <Layout>
+              <Notifications />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+
+      <Route
+        path="*"
+        element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />}
+      />
     </Routes>
   );
 }
