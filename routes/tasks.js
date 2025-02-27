@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/connection");
 
-router.get("/tasks", async (req, res) => {
-  try {
-    const [tasks] = await db.query("SELECT * FROM tasks"); // ✅ Fix: Await the promise
-    res.json({ tasks });
-  } catch (error) {
-    console.error("Database error:", error);
-    res.status(500).json({ error: "Failed to fetch tasks" });
-  }
+router.get('/tasks', (req, res) => {
+  db.query('SELECT * FROM tasks', (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Database query failed' });
+    }
+    res.json({ tasks: results });
+  });
 });
 
 module.exports = router;
