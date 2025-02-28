@@ -9,6 +9,7 @@ import Notifications from './Notifications';
 import Footer from './Footer';
 import Register from './Register';
 import Login from './Login';
+import Teams from './Teams';
 
 // Layout component
 function Layout({ children }) {
@@ -60,6 +61,7 @@ function App() {
       <Route path="/register" element={<Register setAuth={setIsAuthenticated} />} />
       <Route path="/dashboard" element={isAuthenticated ? <Layout><NavBar setAuth={setIsAuthenticated} /><Dashboard /></Layout> : <Navigate to="/login" />} />
       <Route path="/calender" element={isAuthenticated ? <Layout><Calender /></Layout> : <Navigate to="/login" />} />
+      <Route path="/teams" element={isAuthenticated ? <Layout><Teams /></Layout> : <Navigate to="/login" />} />
       <Route path="/notifications" element={isAuthenticated ? <Layout><Notifications /></Layout> : <Navigate to="/login" />} />
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
     </Routes>

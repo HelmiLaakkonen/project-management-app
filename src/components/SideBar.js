@@ -35,6 +35,9 @@ function SideBar() {
         <ListItem button component={Link} to="/calender">
           <ListItemText primary="Calender" />
         </ListItem>
+        <ListItem button component={Link} to="/teams">
+          <ListItemText primary="Teams" />
+        </ListItem>
         
       </List>
     </Drawer>
