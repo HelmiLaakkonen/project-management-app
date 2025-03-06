@@ -11,6 +11,7 @@ import Sidebar from "./SideBar";
 import NavBar from "./NavBar";
 import Dashboard from "./Dashboard";
 import Calender from "./Calender";
+import Roadmap from "./Roadmap";
 import Notifications from "./Notifications";
 import Footer from "./Footer";
 import Register from "./Register";
@@ -119,6 +120,18 @@ function App() {
           )
         }
       />
+      <Route
+        path="/roadmap"
+        element={
+          isAuthenticated ? (
+            <Layout>
+              <Roadmap />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      ></Route>
       <Route
         path="/notifications"
         element={

@@ -1,11 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import { Container, Box } from "@mui/material";
-import Sidebar from "./SideBar";
-import NavBar from "./NavBar";
 import Calender from "./Calender";
 import Login from "./Login";
 import Kanban from "./Kanban";
-import CssBaseline from "@mui/material/CssBaseline";
+import Roadmap from "./Roadmap";
 
 function Layout({ children }) {
   return (
@@ -27,8 +25,6 @@ function Layout({ children }) {
             justifyContent: "center",
           }}
         >
-          {" "}
-          {/* Centered content */}
           {children}
         </Box>
       </Box>
@@ -62,6 +58,14 @@ function Dashboard() {
         element={
           <Layout>
             <Calender />
+          </Layout>
+        }
+      />
+      <Route
+        path="/roadmap"
+        element={
+          <Layout>
+            <Roadmap />
           </Layout>
         }
       />
