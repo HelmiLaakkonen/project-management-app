@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import { Grid, Typography, Container, Box } from "@mui/material";
+import {
+  Grid,
+  Typography,
+  Container,
+  Box,
+  TextField,
+  Button,
+} from "@mui/material";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 function Kanban() {
@@ -11,7 +18,17 @@ function Kanban() {
     ready: [],
   });
 
+  const [newTask, setNewTask] = useState({
+    task_name: "",
+    description: "",
+    status: "pending",
+  });
+
   useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = () => {
     fetch("http://localhost:3000/api/tasks")
       .then((response) => response.json())
       .then((data) => {
@@ -25,7 +42,23 @@ function Kanban() {
         setTasks(groupedTasks);
       })
       .catch((error) => console.error("Error fetching tasks:", error));
-  }, []);
+  };
+
+  const handleAddTask = () => {
+    if (!newTask.task_name) return;
+
+    fetch("http://localhost:3000/api/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...newTask, team_id: 1 }), // Set a default team_id
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetchTasks(); // Refresh tasks after adding
+        setNewTask({ task_name: "", description: "", status: "pending" });
+      })
+      .catch((error) => console.error("Error adding task:", error));
+  };
 
   const handleDragEnd = (result) => {
     if (!result.destination) return;
@@ -83,8 +116,31 @@ function Kanban() {
       }}
     >
       <Box
-        sx={{ display: "flex", justifyContent: "center", gap: 4, flexGrow: 1 }}
+        sx={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}
       >
+        {/* Task Input Form */}
+        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+          <TextField
+            label="Task Name"
+            variant="outlined"
+            value={newTask.task_name}
+            onChange={(e) =>
+              setNewTask({ ...newTask, task_name: e.target.value })
+            }
+          />
+          <TextField
+            label="Description"
+            variant="outlined"
+            value={newTask.description}
+            onChange={(e) =>
+              setNewTask({ ...newTask, description: e.target.value })
+            }
+          />
+          <Button variant="contained" onClick={handleAddTask}>
+            Add Task
+          </Button>
+        </Box>
+
         <DragDropContext onDragEnd={handleDragEnd}>
           <Grid container spacing={4} justifyContent="center">
             {Object.entries(tasks).map(([columnId, columnTasks]) => (
