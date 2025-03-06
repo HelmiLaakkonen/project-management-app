@@ -125,14 +125,14 @@ function Kanban() {
         alignItems: "flex-start",
         flexGrow: 1,
         minHeight: "80vh",
-        overflow: "hidden", // Prevents unnecessary scrolling
+        overflow: "hidden",
       }}
     >
       <Box
         sx={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}
       >
         {/* Task Input Form */}
-        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        {/*<Box sx={{ display: "flex", gap: 2, mb: 2 }}>
           <TextField
             label="Task Name"
             variant="outlined"
@@ -152,7 +152,7 @@ function Kanban() {
           <Button variant="contained" onClick={handleAddTask}>
             Add Task
           </Button>
-        </Box>
+        </Box>*/}
 
         <DragDropContext onDragEnd={handleDragEnd}>
           <Grid container spacing={4} justifyContent="center">

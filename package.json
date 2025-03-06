@@ -6,12 +6,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@hello-pangea/dnd": "^18.0.1",
-<<<<<<< HEAD
     "@mui/icons-material": "^6.4.7",
     "@mui/lab": "^6.0.0-beta.30",
-=======
-    "@mui/icons-material": "^6.4.6",
->>>>>>> fffd3033cecc1f5e4483bea9db8878a70f17b7da
     "@mui/material": "^6.4.0",
     "@mui/x-date-pickers": "^7.23.6",
     "axios": "^1.7.9",
