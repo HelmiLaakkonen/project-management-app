@@ -34,8 +34,8 @@ function Calendar() {
 
   // Filter tasks for selected date using UTC comparison
   const tasksForSelectedDate = tasks.filter((task) => {
-    const taskDate = dayjs.utc(task.due_date).format("YYYY-MM-DD"); // Treat as UTC
-    const selectedFormatted = selectedDate.format("YYYY-MM-DD"); // Local date for user selection
+    const taskDate = dayjs.utc(task.created_at).format("YYYY-MM-DD"); // Now filtering by created_at
+    const selectedFormatted = selectedDate.format("YYYY-MM-DD");
     return taskDate === selectedFormatted;
   });
 
