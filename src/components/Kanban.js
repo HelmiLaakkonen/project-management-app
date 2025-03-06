@@ -75,6 +75,14 @@ function Kanban() {
     const newDestinationTasks = Array.from(tasks[destinationColumn]);
     newDestinationTasks.splice(destination.index, 0, movedTask);
 
+    // Update the status of the moved task
+    movedTask.status =
+      destinationColumn === "todo"
+        ? "pending"
+        : destinationColumn === "inProgress"
+        ? "in_progress"
+        : "completed";
+
     setTasks({
       ...tasks,
       [sourceColumn]: newSourceTasks,
@@ -84,12 +92,17 @@ function Kanban() {
     fetch(`http://localhost:3000/api/tasks/${movedTask.task_id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: destinationColumn }),
+      body: JSON.stringify({ status: movedTask.status }),
     }).catch((error) => console.error("Error updating task status:", error));
   };
 
-  const Item = styled(Paper)(() => ({
-    backgroundColor: "#98d6a9",
+  const Item = styled(Paper)(({ status }) => ({
+    backgroundColor:
+      status === "pending"
+        ? "#ffe9f0"
+        : status === "in_progress"
+        ? "#e8f7f8"
+        : "#ecfbe8",
     padding: 8,
     textAlign: "center",
     color: "black",
@@ -176,6 +189,7 @@ function Kanban() {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
+                                status={task.status} // Pass the status prop
                               >
                                 {task.task_name}
                               </Item>
