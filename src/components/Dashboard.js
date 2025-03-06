@@ -82,7 +82,6 @@ function DashboardContent() {
 
         {/* RIGHT SIDE: Task Roadmap (full height) */}
         <Grid item xs={12} md={3}>
-          {" "}
           {/* Reduced width */}
           <Paper
             sx={{
