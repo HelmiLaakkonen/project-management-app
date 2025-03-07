@@ -132,7 +132,18 @@ function Kanban() {
         sx={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}
       >
         {/* Task Input Form */}
-        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            mb: 2,
+            backgroundColor: "#fce4ec", // Soft pastel pink
+            padding: 2,
+            borderRadius: "12px", // Rounded corners
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Soft shadow
+            alignItems: "center",
+          }}
+        >
           <TextField
             label="Task Name"
             variant="outlined"
@@ -140,6 +151,13 @@ function Kanban() {
             onChange={(e) =>
               setNewTask({ ...newTask, task_name: e.target.value })
             }
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+              },
+            }}
           />
           <TextField
             label="Description"
@@ -148,8 +166,29 @@ function Kanban() {
             onChange={(e) =>
               setNewTask({ ...newTask, description: e.target.value })
             }
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+              },
+            }}
           />
-          <Button variant="contained" onClick={handleAddTask}>
+          <Button
+            variant="contained"
+            onClick={handleAddTask}
+            sx={{
+              backgroundColor: "#f48fb1", // Pastel pink button
+              color: "white",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              borderRadius: "10px",
+              textTransform: "none", // Makes text more readable
+              "&:hover": {
+                backgroundColor: "#d81b60", // Slightly darker pink on hover
+              },
+            }}
+          >
             Add Task
           </Button>
         </Box>
