@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Typography, Link, Grid } from "@mui/material";
+import { Box, Typography, Link, Grid2 } from "@mui/material";
 
 function Footer() {
   return (
@@ -13,14 +13,14 @@ function Footer() {
         mt: "auto",
       }}
     >
-      <Grid
+      <Grid2
         container
         spacing={3}
         justifyContent="space-between"
         alignItems="center"
       >
         {/* Project Information */}
-        <Grid
+        <Grid2
           item
           xs={12}
           md={4}
@@ -32,13 +32,13 @@ function Footer() {
           <Typography variant="body2">
             Developed by Helmi Laakkonen, Pinja Kemppainen & Teemu Räisänen.
           </Typography>
-        </Grid>
+        </Grid2>
 
         {/* Links Section */}
-        <Grid item xs={12} md={4} sx={{ textAlign: "center" }}>
+        <Grid2 item xs={12} md={4} sx={{ textAlign: "center" }}>
           <Typography variant="body1">
             <Link
-              href="https://github.com/your-repository"
+              href="https://github.com/HelmiLaakkonen/project-management-app"
               color="inherit"
               target="_blank"
               rel="noopener"
@@ -51,18 +51,18 @@ function Footer() {
               GitHub Repository
             </Link>
           </Typography>
-        </Grid>
+        </Grid2>
 
         {/* Copyright Information */}
-        <Grid
+        <Grid2
           item
           xs={12}
           md={4}
           sx={{ textAlign: "right", paddingRight: "20px" }}
         >
           <Typography variant="body2">© 2025 All rights reserved.</Typography>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Box>
   );
 }
