@@ -7,6 +7,7 @@ import {
   Divider,
   Box,
   IconButton,
+  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -22,31 +23,56 @@ function Notifications({ open, toggleNotifications }) {
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",
+          backgroundColor: "#fdfded", // Light pastel color to match sidebar
+          color: "#5a5a5a", // Muted text color for readability
+          padding: "16px",
+          transition: "transform 0.3s ease", // Smooth transition
         },
       }}
     >
+      {/* Header Section */}
       <Box
         sx={{
-          padding: 2,
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
+          justifyContent: "space-between",
+          paddingBottom: "8px",
         }}
       >
-        <h2>Notifications</h2>
-        <IconButton onClick={toggleNotifications}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
+          Notifications
+        </Typography>
+        <IconButton onClick={toggleNotifications} sx={{ color: "#d32f2f" }}>
           <CloseIcon />
         </IconButton>
       </Box>
-      <Divider />
+
+      <Divider sx={{ marginBottom: "10px" }} />
+
+      {/* Notifications List */}
       <List>
-        <ListItem>
+        <ListItem
+          sx={{
+            "&:hover": { backgroundColor: "#f8bbd0" },
+            borderRadius: "8px",
+          }}
+        >
           <ListItemText primary="🔔 New comment on your task" />
         </ListItem>
-        <ListItem>
+        <ListItem
+          sx={{
+            "&:hover": { backgroundColor: "#f8bbd0" },
+            borderRadius: "8px",
+          }}
+        >
           <ListItemText primary="📅 Upcoming meeting tomorrow" />
         </ListItem>
-        <ListItem>
+        <ListItem
+          sx={{
+            "&:hover": { backgroundColor: "#f8bbd0" },
+            borderRadius: "8px",
+          }}
+        >
           <ListItemText primary="✅ Your task has been completed" />
         </ListItem>
       </List>

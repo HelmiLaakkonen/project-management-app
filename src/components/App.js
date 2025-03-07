@@ -30,9 +30,9 @@ function Layout({
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <NavBar
-        setAuth={setAuth} // ✅ Fix: Properly passing setAuth
+        setAuth={setAuth}
         sidebarOpen={sidebarOpen}
-        toggleNotifications={toggleNotifications} // ✅ Pass notifications toggle
+        toggleNotifications={toggleNotifications}
       />
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
@@ -53,8 +53,7 @@ function Layout({
         <Notifications
           open={notificationsOpen}
           toggleNotifications={toggleNotifications}
-        />{" "}
-        {/* ✅ Fix: Pass notificationsOpen */}
+        />
       </Box>
       <Footer />
     </Box>
@@ -128,9 +127,9 @@ function App() {
             <Layout
               sidebarOpen={sidebarOpen}
               toggleSidebar={toggleSidebar}
-              notificationsOpen={notificationsOpen} // ✅ Pass notifications state
-              toggleNotifications={toggleNotifications} // ✅ Pass toggle function
-              setAuth={setIsAuthenticated} // ✅ Fix: Properly pass setAuth
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Dashboard />
             </Layout>
