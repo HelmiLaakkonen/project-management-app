@@ -4,6 +4,8 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
+
+
 const Column = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   backgroundColor: "#f5f5f5",
@@ -28,10 +30,17 @@ export default function TeamsList() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/teams")
+    const token = localStorage.getItem("token");
+
+    fetch("http://localhost:3000/teams", {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
-        console.log("API Response:", data); // Debugging log
+        console.log("API Response:", data); // Debug
         if (data && Array.isArray(data.teams)) {
           setTeams(data.teams);
         } else {

@@ -8,6 +8,7 @@ const db = require("./db/connection");
 const cors = require('cors');
 const tasksRouter = require("./routes/tasks");
 const teamsRouter = require("./routes/teams");
+const authenticate = require("./middleware/authenticate");
 
 
 // Load env variables
@@ -34,7 +35,7 @@ app.use('/login', loginRouter);
 app.use('/users', usersRouter);
 app.use('/register', registerRouter);
 app.use("/api", tasksRouter);
-app.use('/teams', teamsRouter);
+app.use('/teams', authenticate, teamsRouter);
 
 
 console.log('Server is running...');
