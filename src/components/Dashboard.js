@@ -53,7 +53,6 @@ function DashboardContent() {
             <Grid container spacing={1.5}>
               {/* Kanban Board - Shifted left by reducing width */}
               <Grid item xs={12} md={6}>
-                {" "}
                 {/* Reduced from 8 to 6 */}
                 <Box sx={{ minHeight: "500px" }}>
                   <Kanban />
@@ -62,7 +61,6 @@ function DashboardContent() {
 
               {/* Calendar - Given more space */}
               <Grid item xs={12} md={6}>
-                {" "}
                 {/* Increased width */}
                 <Box
                   sx={{

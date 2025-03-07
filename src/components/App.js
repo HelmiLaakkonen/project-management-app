@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { Box } from "@mui/material";
 import Sidebar from "./SideBar";
 import NavBar from "./NavBar";
@@ -10,7 +16,7 @@ import Notifications from "./Notifications";
 import Footer from "./Footer";
 import Register from "./Register";
 import Login from "./Login";
-import Profile from './Profile';
+import Profile from "./Profile";
 
 // Layout component with a sticky footer
 function Layout({ children, sidebarOpen, toggleSidebar }) {

@@ -7,13 +7,13 @@ function Footer() {
       component="footer"
       sx={{
         width: "100%",
-        position: "fixed",
+        position: "static",
         bottom: 0,
         left: 0,
         backgroundColor: "#f8bbd0", // Pastel pink
         color: "white",
-        display: 'flex',
-        justifyContent: 'flex-end',
+        display: "flex",
+        justifyContent: "center",
         textAlign: "center",
         padding: "10px 0",
       }}
