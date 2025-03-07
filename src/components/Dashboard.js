@@ -16,7 +16,6 @@ function Layout({ children }) {
       }}
     >
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        {/* Removed unnecessary centering to allow full width usage */}
         <Box sx={{ flexGrow: 1, padding: 3 }}>{children}</Box>
       </Box>
     </Box>

@@ -1,30 +1,53 @@
-import React from 'react';
-import { Drawer, List, ListItem, ListItemText, Divider, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import React from "react";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Box,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const drawerWidth = 240;
 
-function Notifications() {
+function Notifications({ open, toggleNotifications }) {
   return (
     <Drawer
+      anchor="right"
+      open={open}
+      onClose={toggleNotifications}
       sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: drawerWidth,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
         },
       }}
-      variant="permanent"
-      anchor="right"
     >
-      <Box sx={{ padding: 2 }}>
-        <h2>Dashboard</h2>
+      <Box
+        sx={{
+          padding: 2,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2>Notifications</h2>
+        <IconButton onClick={toggleNotifications}>
+          <CloseIcon />
+        </IconButton>
       </Box>
       <Divider />
       <List>
-        <ListItem button component={Link} to="/">
-          <ListItemText primary="Home" />
+        <ListItem>
+          <ListItemText primary="🔔 New comment on your task" />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary="📅 Upcoming meeting tomorrow" />
+        </ListItem>
+        <ListItem>
+          <ListItemText primary="✅ Your task has been completed" />
         </ListItem>
       </List>
     </Drawer>

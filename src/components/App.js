@@ -12,18 +12,28 @@ import NavBar from "./NavBar";
 import Dashboard from "./Dashboard";
 import Calender from "./Calender";
 import Roadmap from "./Roadmap";
-import Notifications from "./Notifications";
 import Footer from "./Footer";
 import Register from "./Register";
 import Login from "./Login";
 import Profile from "./Profile";
+import Notifications from "./Notifications";
 
 // Layout component with a sticky footer
-function Layout({ children, sidebarOpen, toggleSidebar, setAuth }) {
+function Layout({
+  children,
+  sidebarOpen,
+  toggleSidebar,
+  notificationsOpen,
+  toggleNotifications,
+  setAuth,
+}) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <NavBar setAuth={setAuth} sidebarOpen={sidebarOpen} />
-      {/* ✅ Fix: Pass setAuth */}
+      <NavBar
+        setAuth={setAuth} // ✅ Fix: Properly passing setAuth
+        sidebarOpen={sidebarOpen}
+        toggleNotifications={toggleNotifications} // ✅ Pass notifications toggle
+      />
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
         <Box
@@ -40,6 +50,11 @@ function Layout({ children, sidebarOpen, toggleSidebar, setAuth }) {
         >
           {children}
         </Box>
+        <Notifications
+          open={notificationsOpen}
+          toggleNotifications={toggleNotifications}
+        />{" "}
+        {/* ✅ Fix: Pass notificationsOpen */}
       </Box>
       <Footer />
     </Box>
@@ -51,10 +66,16 @@ function App() {
     !!localStorage.getItem("token")
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
   const location = useLocation();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+
+  const toggleNotifications = () => {
+    setNotificationsOpen(!notificationsOpen);
   };
 
   useEffect(() => {
@@ -73,7 +94,6 @@ function App() {
     };
   }, []);
 
-  // Close the sidebar when the route changes
   useEffect(() => {
     setSidebarOpen(false);
   }, [location]);
@@ -108,7 +128,9 @@ function App() {
             <Layout
               sidebarOpen={sidebarOpen}
               toggleSidebar={toggleSidebar}
-              setAuth={setIsAuthenticated}
+              notificationsOpen={notificationsOpen} // ✅ Pass notifications state
+              toggleNotifications={toggleNotifications} // ✅ Pass toggle function
+              setAuth={setIsAuthenticated} // ✅ Fix: Properly pass setAuth
             >
               <Dashboard />
             </Layout>
@@ -122,7 +144,12 @@ function App() {
         path="/calender"
         element={
           isAuthenticated ? (
-            <Layout sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar}>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
               <Calender />
             </Layout>
           ) : (
@@ -134,19 +161,29 @@ function App() {
         path="/roadmap"
         element={
           isAuthenticated ? (
-            <Layout>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
               <Roadmap />
             </Layout>
           ) : (
             <Navigate to="/login" />
           )
         }
-      ></Route>
+      />
       <Route
         path="/notifications"
         element={
           isAuthenticated ? (
-            <Layout sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar}>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
               <Notifications />
             </Layout>
           ) : (
@@ -158,7 +195,12 @@ function App() {
         path="/profile"
         element={
           isAuthenticated ? (
-            <Layout sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar}>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
               <Profile />
             </Layout>
           ) : (
