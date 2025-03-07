@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { Container, Box, Grid, Paper } from "@mui/material";
+import { Container, Box, Grid2, Paper } from "@mui/material";
 import Calender from "./Calender";
 import Login from "./Login";
 import Kanban from "./Kanban";
@@ -16,16 +16,8 @@ function Layout({ children }) {
       }}
     >
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        <Box
-          sx={{
-            flexGrow: 1,
-            padding: 3,
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          {children}
-        </Box>
+        {/* Removed unnecessary centering to allow full width usage */}
+        <Box sx={{ flexGrow: 1, padding: 3 }}>{children}</Box>
       </Box>
     </Box>
   );
@@ -34,14 +26,12 @@ function Layout({ children }) {
 function DashboardContent() {
   return (
     <Container
-      maxWidth="lg" // Keeps layout centered
-      sx={{ mt: 3, px: 1 }} // Reduced side padding
+      maxWidth="xl" // Increased from "lg" to "xl" for better content fit
+      sx={{ mt: 3, px: 1 }}
     >
-      <Grid container spacing={2}>
+      <Grid2 container spacing={2}>
         {/* LEFT SIDE: Kanban + Calendar inside one box */}
-        <Grid item xs={12} md={9}>
-          {" "}
-          {/* Increased width for better fit */}
+        <Grid2 item xs={12} md={8}>
           <Paper
             sx={{
               padding: 2,
@@ -50,37 +40,32 @@ function DashboardContent() {
               backgroundColor: "#fff5f8",
             }}
           >
-            <Grid container spacing={1.5}>
-              {/* Kanban Board - Shifted left by reducing width */}
-              <Grid item xs={12} md={6}>
-                {/* Reduced from 8 to 6 */}
+            <Grid2 container spacing={1.5}>
+              {/* Kanban Board - Now takes more space */}
+              <Grid2 item xs={12} md={7}>
                 <Box sx={{ minHeight: "500px" }}>
                   <Kanban />
                 </Box>
-              </Grid>
+              </Grid2>
 
               {/* Calendar - Given more space */}
-              <Grid item xs={12} md={6}>
-                {/* Increased width */}
+              <Grid2 item xs={12} md={5}>
                 <Box
                   sx={{
                     minHeight: "500px",
-                    maxWidth: "100%", // Prevents overflow
+                    maxWidth: "100%",
                     overflow: "hidden",
-                    display: "flex",
-                    justifyContent: "center",
                   }}
                 >
                   <Calender />
                 </Box>
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Paper>
-        </Grid>
+        </Grid2>
 
         {/* RIGHT SIDE: Task Roadmap (full height) */}
-        <Grid item xs={12} md={3}>
-          {/* Reduced width */}
+        <Grid2 item xs={12} md={4}>
           <Paper
             sx={{
               padding: 2,
@@ -92,8 +77,8 @@ function DashboardContent() {
           >
             <Roadmap />
           </Paper>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Container>
   );
 }

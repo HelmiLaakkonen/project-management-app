@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import {
-  Grid,
+  Grid2,
   Typography,
   Container,
   Box,
@@ -132,7 +132,7 @@ function Kanban() {
         sx={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}
       >
         {/* Task Input Form */}
-        {/*<Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
           <TextField
             label="Task Name"
             variant="outlined"
@@ -152,12 +152,12 @@ function Kanban() {
           <Button variant="contained" onClick={handleAddTask}>
             Add Task
           </Button>
-        </Box>*/}
+        </Box>
 
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Grid container spacing={4} justifyContent="center">
+          <Grid2 container spacing={4} justifyContent="center">
             {Object.entries(tasks).map(([columnId, columnTasks]) => (
-              <Grid item key={columnId}>
+              <Grid2 item key={columnId}>
                 <Column
                   elevation={3}
                   bgColor={
@@ -201,9 +201,9 @@ function Kanban() {
                     )}
                   </Droppable>
                 </Column>
-              </Grid>
+              </Grid2>
             ))}
-          </Grid>
+          </Grid2>
         </DragDropContext>
       </Box>
     </Container>

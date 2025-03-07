@@ -41,7 +41,6 @@ function Layout({ children, sidebarOpen, toggleSidebar }) {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            minHeight: "calc(100vh - 64px - 40px)", // Adjust for navbar & footer height
           }}
         >
           {children}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Paper } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 import {
   Timeline,
   TimelineItem,
@@ -18,7 +18,7 @@ function Roadmap() {
       try {
         const response = await fetch("http://localhost:3000/api/tasks");
         const data = await response.json();
-        console.log("Fetched Tasks:", data.tasks); // ✅ Check if data is received
+        console.log("Fetched Tasks:", data.tasks);
         setTasks(data.tasks || []);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -35,10 +35,11 @@ function Roadmap() {
       elevation={3}
       sx={{
         padding: 3,
-        marginTop: 3,
         textAlign: "center",
         backgroundColor: "#fff5f8",
         borderRadius: "12px",
+        maxWidth: "500px", // Set a limited width for a vertical layout
+        margin: "auto", // Center the roadmap
       }}
     >
       <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
@@ -46,12 +47,16 @@ function Roadmap() {
       </Typography>
 
       {tasks.length > 0 ? (
-        <Timeline position="right">
-          {tasks.map((task) => (
+        <Timeline position="alternate">
+          {" "}
+          {/* This makes it vertical */}
+          {tasks.map((task, index) => (
             <TimelineItem key={task.task_id}>
               <TimelineSeparator>
-                <TimelineDot color="secondary" />
-                <TimelineConnector />
+                <TimelineDot
+                  color={index % 2 === 0 ? "primary" : "secondary"}
+                />
+                {index !== tasks.length - 1 && <TimelineConnector />}
               </TimelineSeparator>
               <TimelineContent>
                 <Typography
