@@ -19,16 +19,11 @@ import Login from "./Login";
 import Profile from "./Profile";
 
 // Layout component with a sticky footer
-function Layout({ children, sidebarOpen, toggleSidebar }) {
+function Layout({ children, sidebarOpen, toggleSidebar, setAuth }) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}
-    >
-      <NavBar />
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <NavBar setAuth={setAuth} sidebarOpen={sidebarOpen} />
+      {/* ✅ Fix: Pass setAuth */}
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
         <Box
@@ -110,7 +105,11 @@ function App() {
         path="/dashboard"
         element={
           isAuthenticated ? (
-            <Layout sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar}>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              setAuth={setIsAuthenticated}
+            >
               <Dashboard />
             </Layout>
           ) : (
@@ -118,6 +117,7 @@ function App() {
           )
         }
       />
+
       <Route
         path="/calender"
         element={
