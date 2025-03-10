@@ -69,31 +69,46 @@ function Kanban() {
 
     if (sourceColumn === destinationColumn) return;
 
-    const movedTask = tasks[sourceColumn][source.index];
-    const newSourceTasks = Array.from(tasks[sourceColumn]);
-    newSourceTasks.splice(source.index, 1);
-    const newDestinationTasks = Array.from(tasks[destinationColumn]);
-    newDestinationTasks.splice(destination.index, 0, movedTask);
+    const movedTask = { ...tasks[sourceColumn][source.index] };
+    const updatedTasks = { ...tasks };
 
-    // Update the status of the moved task
-    movedTask.status =
+    // Remove task from source column
+    updatedTasks[sourceColumn] = [...updatedTasks[sourceColumn]];
+    updatedTasks[sourceColumn].splice(source.index, 1);
+
+    // Add task to destination column
+    updatedTasks[destinationColumn] = [...updatedTasks[destinationColumn]];
+    updatedTasks[destinationColumn].splice(destination.index, 0, movedTask);
+
+    // Update task status
+    const newStatus =
       destinationColumn === "todo"
         ? "pending"
         : destinationColumn === "inProgress"
         ? "in_progress"
         : "completed";
 
-    setTasks({
-      ...tasks,
-      [sourceColumn]: newSourceTasks,
-      [destinationColumn]: newDestinationTasks,
-    });
+    movedTask.status = newStatus;
+    setTasks(updatedTasks);
 
-    fetch(`http://localhost:3000/api/tasks/${movedTask.task_id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: movedTask.status }),
-    }).catch((error) => console.error("Error updating task status:", error));
+    // Automatically update database only when moving from "To Do" to "In Progress"
+    if (sourceColumn === "todo" && destinationColumn === "inProgress") {
+      fetch(`http://localhost:3000/api/tasks/${movedTask.task_id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      })
+        .then((response) => response.json())
+        .then(() => {
+          console.log(
+            `✅ Task "${movedTask.task_name}" (ID: ${movedTask.task_id}) moved to In Progress and updated in DB!`
+          );
+          fetchTasks(); // Refresh tasks after update
+        })
+        .catch((error) =>
+          console.error("❌ Error updating task status:", error)
+        );
+    }
   };
 
   const Item = styled(Paper)(({ status }) => ({

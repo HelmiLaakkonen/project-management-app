@@ -36,12 +36,31 @@ router.post("/tasks", (req, res) => {
       }
 
       console.log("Task added successfully:", results);
-      res
-        .status(201)
-        .json({
-          message: "Task added successfully",
-          task_id: results.insertId,
-        });
+      res.status(201).json({
+        message: "Task added successfully",
+        task_id: results.insertId,
+      });
+    }
+  );
+});
+
+router.put("/tasks/:task_id", (req, res) => {
+  const { task_id } = req.params;
+  const { status } = req.body;
+
+  db.query(
+    "UPDATE tasks SET status = ? WHERE task_id = ?",
+    [status, task_id],
+    (err, result) => {
+      if (err) {
+        console.error("Database update error:", err);
+        return res.status(500).json({ error: "Database update failed" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      res.json({ message: "Task updated succesfully" });
     }
   );
 });
