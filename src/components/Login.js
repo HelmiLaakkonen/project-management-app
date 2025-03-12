@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { Container, Paper, TextField, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
+const fontStyle = {
+  fontFamily: `"Poppins", sans-serif`,
+};
+
 function Login({ setAuth }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Initialize navigate for redirect
+  const navigate = useNavigate();  // Initialize navigate for redirection
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -57,13 +61,40 @@ function Login({ setAuth }) {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Paper elevation={6} sx={{ padding: 3 }}>
-        <Typography variant="h5" gutterBottom>
+    <Container
+      component="main"
+      maxWidth="xs"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f0f4f8", // Light background color
+      }}
+    >
+      <Paper
+        elevation={6}
+        sx={{
+          padding: 3,
+          width: "100%",
+          maxWidth: "400px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          borderRadius: "20px",
+          backgroundColor: "#fff5f8", // Soft pastel pink background
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Soft elegant shadow
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{ fontWeight: "bold", color: "#d63384", mb: 2, ...fontStyle }}
+        >
           Login
         </Typography>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} style={{ width: "100%" }}>
           {/* Username Field */}
           <TextField
             label="Username"
@@ -71,7 +102,25 @@ function Login({ setAuth }) {
             variant="outlined"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            sx={{ marginBottom: 2 }}
+            sx={{ marginBottom: 2, ...fontStyle }}
+            InputLabelProps={{
+              style: { color: "#d63384" },
+            }}
+            InputProps={{
+              sx: {
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#d63384',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#d63384',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#d63384',
+                  },
+                },
+              },
+            }}
           />
 
           {/* Password Field */}
@@ -82,7 +131,25 @@ function Login({ setAuth }) {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            sx={{ marginBottom: 2 }}
+            sx={{ marginBottom: 2, ...fontStyle }}
+            InputLabelProps={{
+              style: { color: "#d63384" },
+            }}
+            InputProps={{
+              sx: {
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#d63384',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#d63384',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#d63384',
+                  },
+                },
+              },
+            }}
           />
 
           {/* Error Message */}
@@ -97,7 +164,16 @@ function Login({ setAuth }) {
             type="submit"
             variant="contained"
             fullWidth
-            sx={{ marginBottom: 2 }}
+            sx={{
+              marginBottom: 2,
+              backgroundColor: "#85a2ff", // Soft pastel blue color
+              color: "white",
+              fontWeight: "bold",
+              ...fontStyle,
+              "&:hover": {
+                backgroundColor: "#6f8cff", // Slightly darker blue on hover
+              },
+            }}
           >
             Login
           </Button>
@@ -108,8 +184,17 @@ function Login({ setAuth }) {
           variant="outlined"
           fullWidth
           onClick={handleRegisterRedirect}
+          sx={{
+            ...fontStyle,
+            borderColor: "#85a2ff",
+            color: "#85a2ff",
+            "&:hover": {
+              borderColor: "#6f8cff",
+              color: "#6f8cff",
+            },
+          }}
         >
-          Don't have an account? Register here
+          Hello new user! Don't have an account? Register here
         </Button>
       </Paper>
     </Container>
