@@ -35,7 +35,7 @@ app.use('/login', loginRouter);
 app.use('/users', usersRouter);
 app.use('/register', registerRouter);
 app.use("/api", tasksRouter);
-app.use('/teams', authenticate, teamsRouter);
+app.use('/api', authenticate, teamsRouter);
 
 
 console.log('Server is running...');
