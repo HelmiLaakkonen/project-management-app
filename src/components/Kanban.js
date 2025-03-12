@@ -11,8 +11,14 @@ function Kanban() {
   });
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     // Fetch tasks from the API
-    fetch("http://localhost:3000/api/tasks")
+    fetch("http://localhost:3000/api/tasks", {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         // Group tasks based on status
