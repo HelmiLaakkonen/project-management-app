@@ -47,6 +47,9 @@ export default function TeamsList() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [teamMembers, setTeamMembers] = useState([]);
   const [open, setOpen] = useState(false);
+  const [teamCreator, setTeamCreator] = useState(null);
+  const [newMember, setNewMember] = useState("");
+  const [addingMember, setAddingMember] = useState(false);
 
   useEffect(() => {
     fetchTeams();
@@ -78,6 +81,7 @@ export default function TeamsList() {
 
   const fetchTeamMembers = (teamId) => {
     const token = localStorage.getItem("token");
+  
     fetch(`http://localhost:3000/api/teams/${teamId}/members`, {
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -86,18 +90,14 @@ export default function TeamsList() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched Team Members:", data); // Debugging
-        if (data && Array.isArray(data.members)) {
-          setTeamMembers(data.members);
-        } else {
-          setTeamMembers([]); // Ensure empty state if no members found
-        }
+        setTeamMembers(data.members || []);
+        setTeamCreator(data.created_by); // Store the team creator ID
       })
       .catch((error) => {
         console.error("Error fetching team members:", error);
-        setTeamMembers([]); // Handle error state
       });
   };
+  
 
   const handleDeleteTeam = () => {
     if (!selectedTeam) return;
@@ -113,13 +113,12 @@ export default function TeamsList() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.success) {
-          setTeams((prevTeams) =>
-            prevTeams.filter((team) => team.team_id !== selectedTeam.team_id)
-          );
-          handleClose(); // Close modal after deletion
+        if (data.error) {
+          alert(data.error); // Show error if unauthorized
         } else {
-          console.error("Failed to delete team:", data.error);
+          alert("Team deleted successfully!");
+          fetchTeams(); // Refresh the teams list
+          handleClose(); // Close the modal
         }
       })
       .catch((error) => {
@@ -128,6 +127,35 @@ export default function TeamsList() {
   };
   
   
+  const handleAddMember = () => {
+    if (!newMember.trim() || !selectedTeam) return;
+  
+    setAddingMember(true);
+    const token = localStorage.getItem("token");
+  
+    fetch(`http://localhost:3000/api/teams/${selectedTeam.team_id}/add-member`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username: newMember }), // Add with username not ID
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setTeamMembers((prevMembers) => [...prevMembers, { username: newMember }]);
+          setNewMember(""); // Clear input
+        } else {
+          console.error("Error adding member:", data.error);
+        }
+        setAddingMember(false);
+      })
+      .catch((error) => {
+        console.error("Error adding member:", error);
+        setAddingMember(false);
+      });
+  };
 
   const handleAddTeam = () => {
     if (!newTeam.trim()) return;
@@ -214,30 +242,50 @@ export default function TeamsList() {
         </Column>
       </Grid>
       <Modal open={open} onClose={handleClose}>
-        <Box sx={modalStyle}>
-          <Typography variant="h6" gutterBottom>
-            Members of {selectedTeam?.team_name}
-          </Typography>
-          {teamMembers.length > 0 ? (
-            teamMembers.map((member, index) => (
-              <Typography key={index}>{member.username}</Typography>
-            ))
-          ) : (
-            <Typography>No members found.</Typography>
-          )}
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleDeleteTeam}
-            style={{ marginTop: "16px" }}
-          >
-          Delete Team
-          </Button>
-          <Button onClick={handleClose} style={{ marginTop: "16px" }}>
-            Close
-          </Button>
-        </Box>
-      </Modal>
+  <Box sx={modalStyle}>
+    <Typography variant="h6" gutterBottom>
+      Members of {selectedTeam?.team_name}
+    </Typography>
+    {teamMembers.length > 0 ? (
+      teamMembers.map((member, index) => (
+        <Typography key={index}>{member.username}</Typography>
+      ))
+    ) : (
+      <Typography>No members found.</Typography>
+    )}
+      <>
+        <TextField
+          label="Enter Username"
+          variant="outlined"
+          fullWidth
+          value={newMember}
+          onChange={(e) => setNewMember(e.target.value)}
+          style={{ marginTop: "16px" }}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddMember}
+          disabled={addingMember}
+          style={{ marginTop: "8px" }}
+        >
+          {addingMember ? "Adding..." : "Add Member"}
+        </Button>
+      </>
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={handleDeleteTeam}
+      style={{ marginTop: "16px" }}
+    >
+      Delete team
+    </Button>
+    <Button onClick={handleClose} style={{ marginTop: "16px" }}>
+      Close
+    </Button>
+  </Box>
+</Modal>
+
     </Grid>
   );
 }

@@ -9,7 +9,7 @@ router.get("/teams", authenticate, (req, res) => {
   console.log("Extracted User ID:", userId);
 
   const query = `
-    SELECT teams.team_id, teams.team_name 
+    SELECT teams.team_id, teams.team_name, created_by
     FROM teams
     JOIN teammemberships ON teams.team_id = teammemberships.team_id
     WHERE teammemberships.user_id = ?;
@@ -64,35 +64,48 @@ router.post("/teams", authenticate, (req, res) => {
 
 
 router.get("/teams/:teamId/members", authenticate, (req, res) => {
-  const { teamId } = req.params;
+  const teamId = req.params.teamId;
 
   const query = `
-    SELECT users.user_id, users.username 
-    FROM users
-    JOIN teammemberships ON users.user_id = teammemberships.user_id
-    WHERE teammemberships.team_id = ?;
+    SELECT u.username, t.created_by 
+    FROM teammemberships tm
+    JOIN users u ON tm.user_id = u.user_id
+    JOIN teams t ON t.team_id = tm.team_id
+    WHERE tm.team_id = ?;
   `;
 
   db.query(query, [teamId], (err, results) => {
     if (err) {
-      console.error("Database error:", err);
+      console.error("Error fetching team members:", err);
       return res.status(500).json({ error: "Database error" });
     }
 
-    res.json({ members: results });
+    if (results.length === 0) {
+      return res.json({ members: [], created_by: null });
+    }
+
+    const createdBy = results[0].created_by;
+    const members = results.map((row) => ({ username: row.username }));
+
+    res.json({ members, created_by: createdBy });
   });
 });
 
-router.delete("/teams/:teamId", authenticate, (req, res) => {
+router.post("/teams/:teamId/add-member", authenticate, (req, res) => {
   const teamId = req.params.teamId;
+  const { username } = req.body;
   const userId = req.user.userId;
 
-  // Only delete if user created team
+  if (!username) {
+    return res.status(400).json({ error: "Username is required" });
+  }
+
+  // Check if the user is the team creator
   const checkOwnerQuery = `SELECT created_by FROM teams WHERE team_id = ?`;
 
   db.query(checkOwnerQuery, [teamId], (err, results) => {
     if (err) {
-      console.error("Error checking team owner:", err);
+      console.error("Error checking team ownership:", err);
       return res.status(500).json({ error: "Database error" });
     }
 
@@ -101,31 +114,81 @@ router.delete("/teams/:teamId", authenticate, (req, res) => {
     }
 
     if (results[0].created_by !== userId) {
-      return res.status(403).json({ error: "You can only delete teams you created" });
+      return res.status(403).json({ error: "Only the team creator can add members" });
     }
 
-    // Delete memberships first
-    const deleteMembershipsQuery = `DELETE FROM teammemberships WHERE team_id = ?`;
+    // Get the user ID of the person being added
+    const getUserIdQuery = `SELECT user_id FROM users WHERE username = ?`;
 
-    db.query(deleteMembershipsQuery, [teamId], (err) => {
+    db.query(getUserIdQuery, [username], (err, userResults) => {
       if (err) {
-        console.error("Error deleting memberships:", err);
+        console.error("Error fetching user:", err);
         return res.status(500).json({ error: "Database error" });
       }
 
-      const deleteTeamQuery = `DELETE FROM teams WHERE team_id = ?`;
+      if (userResults.length === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
 
-      db.query(deleteTeamQuery, [teamId], (err) => {
+      const newMemberId = userResults[0].user_id;
+
+      const insertQuery = `INSERT INTO teammemberships (team_id, user_id) VALUES (?, ?)`;
+
+      db.query(insertQuery, [teamId, newMemberId], (err) => {
         if (err) {
-          console.error("Error deleting team:", err);
+          console.error("Error adding member:", err);
           return res.status(500).json({ error: "Database error" });
         }
 
-        res.json({ success: true, message: "Team deleted successfully" });
+        res.json({ success: true, message: "Member added successfully" });
       });
     });
   });
 });
+
+router.delete("/teams/:teamId", authenticate, (req, res) => {
+  const userId = req.user.userId;
+  const { teamId } = req.params;
+
+  // Check if the user is the creator of the team
+  const checkQuery = `SELECT created_by FROM teams WHERE team_id = ?`;
+
+  db.query(checkQuery, [teamId], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Team not found" });
+    }
+
+    if (results[0].created_by !== userId) {
+      return res.status(403).json({ error: "You are not authorized to delete this team" });
+    }
+
+    // If authorized, delete team and memberships
+    const deleteMemberships = `DELETE FROM teammemberships WHERE team_id = ?`;
+    const deleteTeam = `DELETE FROM teams WHERE team_id = ?`;
+
+    db.query(deleteMemberships, [teamId], (err) => {
+      if (err) {
+        console.error("Error deleting memberships:", err);
+        return res.status(500).json({ error: "Failed to delete team memberships" });
+      }
+
+      db.query(deleteTeam, [teamId], (err) => {
+        if (err) {
+          console.error("Error deleting team:", err);
+          return res.status(500).json({ error: "Failed to delete team" });
+        }
+
+        res.json({ message: "Team deleted successfully" });
+      });
+    });
+  });
+});
+
 
 
 module.exports = router;
