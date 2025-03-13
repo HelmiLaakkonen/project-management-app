@@ -29,19 +29,27 @@ function Kanban() {
   }, []);
 
   const fetchTasks = () => {
-    fetch("http://localhost:3000/api/tasks")
-      .then((response) => response.json())
-      .then((data) => {
-        const groupedTasks = {
-          todo: data.tasks.filter((task) => task.status === "pending"),
-          inProgress: data.tasks.filter(
-            (task) => task.status === "in_progress"
-          ),
-          ready: data.tasks.filter((task) => task.status === "completed"),
-        };
-        setTasks(groupedTasks);
-      })
-      .catch((error) => console.error("Error fetching tasks:", error));
+    const token = localStorage.getItem("token");
+
+    fetch("http://localhost:3000/api/tasks"),
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+        .then((response) => response.json())
+        .then((data) => {
+          const groupedTasks = {
+            todo: data.tasks.filter((task) => task.status === "pending"),
+            inProgress: data.tasks.filter(
+              (task) => task.status === "in_progress"
+            ),
+            ready: data.tasks.filter((task) => task.status === "completed"),
+          };
+          setTasks(groupedTasks);
+        })
+        .catch((error) => console.error("Error fetching tasks:", error));
   };
 
   const handleAddTask = () => {

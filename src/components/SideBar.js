@@ -64,6 +64,9 @@ function SideBar({ open, toggleSidebar }) {
           <ListItem button component={Link} to="/profile">
             <ListItemText primary="Profile" sx={{ color: "#e0218a" }} />
           </ListItem>
+          <ListItem button component={Link} to="/teams">
+            <ListItemText primary="Teams" />
+          </ListItem>
         </List>
       </Drawer>
     </>

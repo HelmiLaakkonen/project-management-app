@@ -17,6 +17,7 @@ import Register from "./Register";
 import Login from "./Login";
 import Profile from "./Profile";
 import Notifications from "./Notifications";
+import Teams from "./Teams";
 
 // Layout component with a sticky footer
 function Layout({
@@ -201,6 +202,18 @@ function App() {
               toggleNotifications={toggleNotifications}
             >
               <Profile />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/teams"
+        element={
+          isAuthenticated ? (
+            <Layout>
+              <Teams />
             </Layout>
           ) : (
             <Navigate to="/login" />
