@@ -19,8 +19,14 @@ function Calendar() {
 
   useEffect(() => {
     async function fetchTasks() {
+      const token = localStorage.getItem("token");
       try {
-        const response = await fetch("http://localhost:3000/api/tasks");
+        const response = await fetch("http://localhost:3000/api/tasks", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         console.log("Fetched Tasks:", data.tasks);
         setTasks(data.tasks || []);
@@ -34,8 +40,8 @@ function Calendar() {
 
   // Filter tasks for selected date using UTC comparison
   const tasksForSelectedDate = tasks.filter((task) => {
-    const taskDate = dayjs.utc(task.due_date).format("YYYY-MM-DD"); // Treat as UTC
-    const selectedFormatted = selectedDate.format("YYYY-MM-DD"); // Local date for user selection
+    const taskDate = dayjs.utc(task.created_at).format("YYYY-MM-DD"); // Now filtering by created_at
+    const selectedFormatted = selectedDate.format("YYYY-MM-DD");
     return taskDate === selectedFormatted;
   });
 

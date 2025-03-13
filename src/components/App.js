@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
-  Routes,
   Route,
+  Routes,
   Navigate,
   useLocation,
 } from "react-router-dom";
@@ -11,39 +11,50 @@ import Sidebar from "./SideBar";
 import NavBar from "./NavBar";
 import Dashboard from "./Dashboard";
 import Calender from "./Calender";
-import Notifications from "./Notifications";
+import Roadmap from "./Roadmap";
 import Footer from "./Footer";
 import Register from "./Register";
 import Login from "./Login";
+import Profile from "./Profile";
+import Notifications from "./Notifications";
+import Teams from "./Teams";
 
 // Layout component with a sticky footer
-function Layout({ children }) {
+function Layout({
+  children,
+  sidebarOpen,
+  toggleSidebar,
+  notificationsOpen,
+  toggleNotifications,
+  setAuth,
+}) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}
-    >
-      <NavBar />
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <NavBar
+        setAuth={setAuth}
+        sidebarOpen={sidebarOpen}
+        toggleNotifications={toggleNotifications}
+      />
       <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        <Sidebar />
+        <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
         <Box
           component="main"
           sx={{
             flexGrow: 1,
-            bgcolor: "#f5f5f5",
+            bgcolor: "#fdfded",
             padding: 3,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            minHeight: "calc(100vh - 64px - 40px)", // Adjust for navbar & footer height
           }}
         >
           {children}
         </Box>
+        <Notifications
+          open={notificationsOpen}
+          toggleNotifications={toggleNotifications}
+        />
       </Box>
       <Footer />
     </Box>
@@ -54,7 +65,18 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("token")
   );
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
   const location = useLocation();
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const toggleNotifications = () => {
+    setNotificationsOpen(!notificationsOpen);
+  };
 
   useEffect(() => {
     setIsAuthenticated(!!localStorage.getItem("token"));
@@ -71,6 +93,10 @@ function App() {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location]);
 
   if (isAuthenticated === null) {
     return <div>Loading...</div>;
@@ -99,7 +125,13 @@ function App() {
         path="/dashboard"
         element={
           isAuthenticated ? (
-            <Layout>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
+            >
               <Dashboard />
             </Layout>
           ) : (
@@ -107,12 +139,35 @@ function App() {
           )
         }
       />
+
       <Route
         path="/calender"
         element={
           isAuthenticated ? (
-            <Layout>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
               <Calender />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/roadmap"
+        element={
+          isAuthenticated ? (
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
+              <Roadmap />
             </Layout>
           ) : (
             <Navigate to="/login" />
@@ -123,8 +178,47 @@ function App() {
         path="/notifications"
         element={
           isAuthenticated ? (
-            <Layout>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
               <Notifications />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          isAuthenticated ? (
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
+              <Profile />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/teams"
+        element={
+          isAuthenticated ? (
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
+              <Teams />
             </Layout>
           ) : (
             <Navigate to="/login" />

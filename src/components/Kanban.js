@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import { Grid, Typography, Container, Box } from "@mui/material";
+import {
+  Grid2,
+  Typography,
+  Container,
+  Box,
+  TextField,
+  Button,
+} from "@mui/material";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 function Kanban() {
@@ -11,8 +18,22 @@ function Kanban() {
     ready: [],
   });
 
-  useEffect(() => {
-    fetch("http://localhost:3000/api/tasks")
+  const [newTask, setNewTask] = useState({
+    task_name: "",
+    description: "",
+    status: "pending",
+  });
+
+  // ✅ Fetch tasks from API
+  const fetchTasks = () => {
+    const token = localStorage.getItem("token");
+
+    fetch("http://localhost:3000/api/tasks", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         const groupedTasks = {
@@ -25,8 +46,31 @@ function Kanban() {
         setTasks(groupedTasks);
       })
       .catch((error) => console.error("Error fetching tasks:", error));
+  };
+
+  // ✅ Run fetchTasks when component mounts
+  useEffect(() => {
+    fetchTasks();
   }, []);
 
+  // ✅ Add new task
+  const handleAddTask = () => {
+    if (!newTask.task_name) return;
+
+    fetch("http://localhost:3000/api/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...newTask, team_id: 1 }), // Default team_id
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetchTasks(); // Refresh tasks after adding
+        setNewTask({ task_name: "", description: "", status: "pending" });
+      })
+      .catch((error) => console.error("Error adding task:", error));
+  };
+
+  // ✅ Handle drag-and-drop movement of tasks
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -36,27 +80,52 @@ function Kanban() {
 
     if (sourceColumn === destinationColumn) return;
 
-    const movedTask = tasks[sourceColumn][source.index];
-    const newSourceTasks = Array.from(tasks[sourceColumn]);
-    newSourceTasks.splice(source.index, 1);
-    const newDestinationTasks = Array.from(tasks[destinationColumn]);
-    newDestinationTasks.splice(destination.index, 0, movedTask);
+    const movedTask = { ...tasks[sourceColumn][source.index] };
+    const updatedTasks = { ...tasks };
 
-    setTasks({
-      ...tasks,
-      [sourceColumn]: newSourceTasks,
-      [destinationColumn]: newDestinationTasks,
-    });
+    // Remove task from source column
+    updatedTasks[sourceColumn] = [...updatedTasks[sourceColumn]];
+    updatedTasks[sourceColumn].splice(source.index, 1);
 
+    // Add task to destination column
+    updatedTasks[destinationColumn] = [...updatedTasks[destinationColumn]];
+    updatedTasks[destinationColumn].splice(destination.index, 0, movedTask);
+
+    // Update task status
+    const newStatus =
+      destinationColumn === "todo"
+        ? "pending"
+        : destinationColumn === "inProgress"
+        ? "in_progress"
+        : "completed";
+
+    movedTask.status = newStatus;
+    setTasks(updatedTasks);
+
+    // ✅ Update status in the database
     fetch(`http://localhost:3000/api/tasks/${movedTask.task_id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: destinationColumn }),
-    }).catch((error) => console.error("Error updating task status:", error));
+      body: JSON.stringify({ status: newStatus }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        console.log(
+          `✅ Task "${movedTask.task_name}" moved to ${newStatus} and updated in DB!`
+        );
+        fetchTasks(); // Refresh tasks after update
+      })
+      .catch((error) => console.error("❌ Error updating task status:", error));
   };
 
-  const Item = styled(Paper)(() => ({
-    backgroundColor: "#98d6a9",
+  // ✅ Styling
+  const Item = styled(Paper)(({ status }) => ({
+    backgroundColor:
+      status === "pending"
+        ? "#ffe9f0"
+        : status === "in_progress"
+        ? "#e8f7f8"
+        : "#ecfbe8",
     padding: 8,
     textAlign: "center",
     color: "black",
@@ -67,7 +136,7 @@ function Kanban() {
     backgroundColor: bgColor,
     padding: "16px",
     minHeight: "300px",
-    width: "300px", // Ensure consistent width
+    width: "300px", // Consistent column width
   }));
 
   return (
@@ -79,16 +148,73 @@ function Kanban() {
         alignItems: "flex-start",
         flexGrow: 1,
         minHeight: "80vh",
-        overflow: "hidden", // Prevents unnecessary scrolling
+        overflow: "hidden",
       }}
     >
       <Box
-        sx={{ display: "flex", justifyContent: "center", gap: 4, flexGrow: 1 }}
+        sx={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}
       >
+        {/* Task Input Form */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            mb: 2,
+            backgroundColor: "#fce4ec",
+            padding: 2,
+            borderRadius: "12px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+            alignItems: "center",
+          }}
+        >
+          <TextField
+            label="Task Name"
+            variant="outlined"
+            value={newTask.task_name}
+            onChange={(e) =>
+              setNewTask({ ...newTask, task_name: e.target.value })
+            }
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Description"
+            variant="outlined"
+            value={newTask.description}
+            onChange={(e) =>
+              setNewTask({ ...newTask, description: e.target.value })
+            }
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+            }}
+          />
+          <Button
+            variant="contained"
+            onClick={handleAddTask}
+            sx={{
+              backgroundColor: "#f48fb1",
+              color: "white",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              borderRadius: "10px",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "#d81b60",
+              },
+            }}
+          >
+            Add Task
+          </Button>
+        </Box>
+
+        {/* Drag & Drop Kanban Board */}
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Grid container spacing={4} justifyContent="center">
+          <Grid2 container spacing={4} justifyContent="center">
             {Object.entries(tasks).map(([columnId, columnTasks]) => (
-              <Grid item key={columnId}>
+              <Grid2 item key={columnId}>
                 <Column
                   elevation={3}
                   bgColor={
@@ -120,6 +246,7 @@ function Kanban() {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
+                                status={task.status}
                               >
                                 {task.task_name}
                               </Item>
@@ -131,9 +258,9 @@ function Kanban() {
                     )}
                   </Droppable>
                 </Column>
-              </Grid>
+              </Grid2>
             ))}
-          </Grid>
+          </Grid2>
         </DragDropContext>
       </Box>
     </Container>

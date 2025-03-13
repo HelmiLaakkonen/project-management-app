@@ -1,30 +1,79 @@
-import React from 'react';
-import { Drawer, List, ListItem, ListItemText, Divider, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import React from "react";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  Box,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const drawerWidth = 240;
 
-function Notifications() {
+function Notifications({ open, toggleNotifications }) {
   return (
     <Drawer
+      anchor="right"
+      open={open}
+      onClose={toggleNotifications}
       sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: drawerWidth,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
+          backgroundColor: "#fdfded", // Light pastel color to match sidebar
+          color: "#5a5a5a", // Muted text color for readability
+          padding: "16px",
+          transition: "transform 0.3s ease", // Smooth transition
         },
       }}
-      variant="permanent"
-      anchor="right"
     >
-      <Box sx={{ padding: 2 }}>
-        <h2>Dashboard</h2>
+      {/* Header Section */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          paddingBottom: "8px",
+        }}
+      >
+        <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
+          Notifications
+        </Typography>
+        <IconButton onClick={toggleNotifications} sx={{ color: "#d32f2f" }}>
+          <CloseIcon />
+        </IconButton>
       </Box>
-      <Divider />
+
+      <Divider sx={{ marginBottom: "10px" }} />
+
+      {/* Notifications List */}
       <List>
-        <ListItem button component={Link} to="/">
-          <ListItemText primary="Home" />
+        <ListItem
+          sx={{
+            "&:hover": { backgroundColor: "#f8bbd0" },
+            borderRadius: "8px",
+          }}
+        >
+          <ListItemText primary="🔔 New comment on your task" />
+        </ListItem>
+        <ListItem
+          sx={{
+            "&:hover": { backgroundColor: "#f8bbd0" },
+            borderRadius: "8px",
+          }}
+        >
+          <ListItemText primary="📅 Upcoming meeting tomorrow" />
+        </ListItem>
+        <ListItem
+          sx={{
+            "&:hover": { backgroundColor: "#f8bbd0" },
+            borderRadius: "8px",
+          }}
+        >
+          <ListItemText primary="✅ Your task has been completed" />
         </ListItem>
       </List>
     </Drawer>

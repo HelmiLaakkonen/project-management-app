@@ -40,9 +40,11 @@ router.post('/', (req, res) => {
                 return res.status(401).json({ message: 'Invalid username or password' });
             }
 
+            
             // If passwords match, create a JWT token (or any other authentication method)
-            const token = jwt.sign({ username: user.username, userId: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
-
+            const token = jwt.sign({ username: user.username, userId: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            console.log("User ID:", user.id);
+            console.log("Generated toekn", token);
             console.log('User authenticated');
             res.json({
                 message: 'Login successful',
