@@ -212,7 +212,12 @@ function App() {
         path="/teams"
         element={
           isAuthenticated ? (
-            <Layout>
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+            >
               <Teams />
             </Layout>
           ) : (

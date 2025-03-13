@@ -15,8 +15,15 @@ function Roadmap() {
 
   useEffect(() => {
     async function fetchTasks() {
+      const token = localStorage.getItem("token");
+
       try {
-        const response = await fetch("http://localhost:3000/api/tasks");
+        const response = await fetch("http://localhost:3000/api/tasks", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         console.log("Fetched Tasks:", data.tasks);
         setTasks(data.tasks || []);
