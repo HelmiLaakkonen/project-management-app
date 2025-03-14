@@ -25,9 +25,17 @@ router.get("/tasks", authenticate, (req, res) => {
 router.post("/tasks", authenticate, (req, res) => {
   const queryTeam = `SELECT team_id FROM teams WHERE team_name = ?`;
   const queryTask = `INSERT INTO tasks (task_name, description, status, team_id) VALUES (?, ?, ?, ?)`;
+  const queryAssignment = `INSERT INTO taskassignments (task_id, user_id) VALUES (?, ?)`;
 
   // Extract values from request
   const { task_name, description, status, team_name } = req.body;
+
+  const userId = req.user.userId;
+  console.log("Extracted User ID:", userId);
+
+  if (!task_name || !status || !team_name || !userId) {
+    return res.status(400).json({ error: "Missing required fields.." });
+  }
 
   db.execute(queryTeam, [team_name], (err, results) => {
     if (err) {
@@ -41,21 +49,32 @@ router.post("/tasks", authenticate, (req, res) => {
 
     const team_id = results[0].team_id;
 
-    // Insert the task with the correct team_id
-    db.execute(queryTask, [task_name, description, status, team_id], (err, results) => {
+    // Insert the task and get the new task_id
+    db.execute(queryTask, [task_name, description ?? "", status, team_id], (err, results) => {
       if (err) {
         console.error("Database error:", err);
         return res.status(500).json({ error: "Database error", details: err });
       }
 
-      console.log("Task added successfully:", results);
-      res.status(201).json({
-        message: "Task added successfully",
-        task_id: results.insertId,
+      const task_id = results.insertId; 
+      
+      // Insert into taskassignments
+      db.execute(queryAssignment, [task_id, userId], (err) => {
+        if (err) {
+          console.error("Database error:", err);
+          return res.status(500).json({ error: "Database error", details: err });
+        }
+
+        console.log("Task and assignment added successfully.");
+        res.status(201).json({
+          message: "Task added successfully and assigned to user",
+          task_id,
+        });
       });
     });
   });
 });
+
 router.put("/tasks/:task_id", authenticate, (req, res) => {
   const { task_id } = req.params;
   const { status } = req.body;
