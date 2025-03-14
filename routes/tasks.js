@@ -23,22 +23,26 @@ router.get("/tasks", authenticate, (req, res) => {
 });
 
 router.post("/tasks", authenticate, (req, res) => {
-  const { task_name, description, status, team_id } = req.body;
+  const queryTeam = `SELECT team_id FROM teams WHERE team_name = ?`;
+  const queryTask = `INSERT INTO tasks (task_name, description, status, team_id) VALUES (?, ?, ?, ?)`;
 
-  if (!task_name || !status || !team_id) {
-    // Ensure team_id is included
-    console.error("Missing fields:", { task_name, status, team_id });
-    return res
-      .status(400)
-      .json({ error: "Task name, status, and team ID are required" });
-  }
+  // Extract values from request
+  const { task_name, description, status, team_name } = req.body;
 
-  const query = `INSERT INTO tasks (task_name, description, status, team_id) VALUES (?, ?, ?, ?)`;
+  db.execute(queryTeam, [team_name], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database error", details: err });
+    }
 
-  db.execute(
-    query,
-    [task_name, description, status, team_id],
-    (err, results) => {
+    if (results.length === 0) {
+      return res.status(400).json({ error: "Team not found. Please use an existing team." });
+    }
+
+    const team_id = results[0].team_id;
+
+    // Insert the task with the correct team_id
+    db.execute(queryTask, [task_name, description, status, team_id], (err, results) => {
       if (err) {
         console.error("Database error:", err);
         return res.status(500).json({ error: "Database error", details: err });
@@ -49,10 +53,9 @@ router.post("/tasks", authenticate, (req, res) => {
         message: "Task added successfully",
         task_id: results.insertId,
       });
-    }
-  );
+    });
+  });
 });
-
 router.put("/tasks/:task_id", authenticate, (req, res) => {
   const { task_id } = req.params;
   const { status } = req.body;

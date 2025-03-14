@@ -63,12 +63,12 @@ function Kanban() {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ...newTask, team_id: 1 }), // Default team_id
+      body: JSON.stringify(newTask),
     })
       .then((response) => response.json())
       .then(() => {
         fetchTasks(); // Refresh tasks after adding
-        setNewTask({ task_name: "", description: "", status: "pending" });
+        setNewTask({ task_name: "", description: "", status: "pending", team_name: "" });
       })
       .catch((error) => console.error("Error adding task:", error));
   };
@@ -180,6 +180,18 @@ function Kanban() {
             value={newTask.task_name}
             onChange={(e) =>
               setNewTask({ ...newTask, task_name: e.target.value })
+            }
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Team Name"
+            variant="outlined"
+            value={newTask.team_name}
+            onChange={(e) =>
+              setNewTask({ ...newTask, team_name: e.target.value })
             }
             sx={{
               backgroundColor: "white",
