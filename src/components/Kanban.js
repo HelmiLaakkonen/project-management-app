@@ -56,10 +56,14 @@ function Kanban() {
   // ✅ Add new task
   const handleAddTask = () => {
     if (!newTask.task_name) return;
+    const token = localStorage.getItem("token");
 
     fetch("http://localhost:3000/api/tasks", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ ...newTask, team_id: 1 }), // Default team_id
     })
       .then((response) => response.json())
@@ -103,9 +107,13 @@ function Kanban() {
     setTasks(updatedTasks);
 
     // ✅ Update status in the database
+    const token = localStorage.getItem("token");
     fetch(`http://localhost:3000/api/tasks/${movedTask.task_id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ status: newStatus }),
     })
       .then((response) => response.json())

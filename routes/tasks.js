@@ -4,7 +4,7 @@ const db = require("../db/connection");
 const dayjs = require("dayjs");
 const authenticate = require("../middleware/authenticate");
 
-router.get("/tasks", (req, res) => {
+router.get("/tasks", authenticate, (req, res) => {
   db.query("SELECT * FROM tasks", (err, results) => {
     if (err) {
       console.error("Database error:", err);
@@ -14,7 +14,7 @@ router.get("/tasks", (req, res) => {
   });
 });
 
-router.post("/tasks", (req, res) => {
+router.post("/tasks", authenticate, (req, res) => {
   const { task_name, description, status, team_id } = req.body;
 
   if (!task_name || !status || !team_id) {
@@ -45,7 +45,7 @@ router.post("/tasks", (req, res) => {
   );
 });
 
-router.put("/tasks/:task_id", (req, res) => {
+router.put("/tasks/:task_id", authenticate, (req, res) => {
   const { task_id } = req.params;
   const { status } = req.body;
 
