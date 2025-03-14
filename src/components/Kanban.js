@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import {
@@ -24,10 +24,9 @@ function Kanban() {
     status: "pending",
   });
 
-  // ✅ Fetch tasks from API
-  const fetchTasks = () => {
+  const fetchTasks = useCallback(() => {
     const token = localStorage.getItem("token");
-
+  
     fetch("http://localhost:3000/api/tasks", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -37,21 +36,21 @@ function Kanban() {
       .then((response) => response.json())
       .then((data) => {
         const groupedTasks = {
-          todo: data.tasks.filter((task) => task.status === "pending"),
-          inProgress: data.tasks.filter(
-            (task) => task.status === "in_progress"
-          ),
-          ready: data.tasks.filter((task) => task.status === "completed"),
+          todo: (data.tasks || []).filter((task) => task.status === "pending"),
+          inProgress: (data.tasks || []).filter((task) => task.status === "in_progress"),
+          ready: (data.tasks || []).filter((task) => task.status === "completed"),
         };
-        setTasks(groupedTasks);
+  
+        setTasks({ ...groupedTasks }); // Force state update
       })
-      .catch((error) => console.error("Error fetching tasks:", error));
-  };
-
-  // ✅ Run fetchTasks when component mounts
+      .catch((error) => console.error(" Error fetching tasks:", error));
+  }, []);
+  
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
+ 
+  
 
   // ✅ Add new task
   const handleAddTask = () => {
