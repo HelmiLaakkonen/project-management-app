@@ -1,16 +1,53 @@
-import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Snackbar, IconButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, TextField, Button, Snackbar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 function Profile() {
-  const [name] = useState('Testi Nimi');
-  const [email] = useState('sähköposti?');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const [error, setError] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    console.log('Token:', token); // Log the token to verify it
+    if (!token) {
+      setError('No token found. Please log in.');
+      return;
+    }
+
+    fetch('http://localhost:3000/profile', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => {
+      console.log('Response status:', response.status); // Log the response status
+      if (!response.ok) {
+        return response.json().then((data) => {
+          throw new Error(data.message || 'Failed to fetch user info');
+        });
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setName(data.username);
+        setEmail(data.email);
+      }
+    })
+    .catch((err) => {
+      console.error('Error fetching user info:', err.message);
+      setError('An error occurred while fetching user info. Please try again.');
+    });
+  }, []);
 
   const handlePasswordChange = () => {
     if (!currentPassword || !newPassword) {
@@ -57,6 +94,11 @@ function Profile() {
       <Typography variant="h4" gutterBottom>
         User Profile
       </Typography>
+      {error && (
+        <Typography color="error" variant="body1" gutterBottom>
+          {error}
+        </Typography>
+      )}
       <Typography variant="body1" gutterBottom>
         Name: {name}
       </Typography>
