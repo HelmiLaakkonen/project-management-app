@@ -100,7 +100,7 @@ function Profile() {
         </Typography>
       )}
       <Typography variant="body1" gutterBottom>
-        Name: {name}
+        Userame: {name}
       </Typography>
       <Typography variant="body1" gutterBottom>
         Email: {email}

@@ -17,9 +17,11 @@ router.get('/', (req, res) => {
             console.log('Failed to authenticate token:', err.message);
             return res.status(401).json({ message: 'Failed to authenticate token' });
         }
+        
+        console.log('Decoded token:', decoded);
 
-        const query = 'SELECT username, email FROM users WHERE id = ?';
-        db.execute(query, [decoded.userId], (err, results) => {
+        const query = 'SELECT username, email FROM users WHERE username = ?';
+        db.execute(query, [decoded.username], (err, results) => {
             if (err) {
                 console.error('Error executing query:', err.message);
                 return res.status(500).json({ error: err.message });
