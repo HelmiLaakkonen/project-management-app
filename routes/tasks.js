@@ -2,9 +2,18 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db/connection");
 const dayjs = require("dayjs");
+const authenticate = require("../middleware/authenticate");
 
-router.get("/tasks", (req, res) => {
-  db.query("SELECT * FROM tasks", (err, results) => {
+router.get("/tasks", authenticate, (req, res) => {
+  const userId = req.user.userId;
+  const query = `
+    SELECT tasks.task_id, tasks.task_name, tasks.description, tasks.team_id, tasks.status
+    FROM tasks
+    JOIN taskassignments ON tasks.task_id = taskassignments.task_id
+    WHERE taskassignments.user_id = ?;
+  `;
+
+  db.query(query, [userId], (err, results) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({ error: "Database query failed" });
@@ -13,38 +22,60 @@ router.get("/tasks", (req, res) => {
   });
 });
 
-router.post("/tasks", (req, res) => {
-  const { task_name, description, status, team_id } = req.body;
+router.post("/tasks", authenticate, (req, res) => {
+  const queryTeam = `SELECT team_id FROM teams WHERE team_name = ?`;
+  const queryTask = `INSERT INTO tasks (task_name, description, status, team_id) VALUES (?, ?, ?, ?)`;
+  const queryAssignment = `INSERT INTO taskassignments (task_id, user_id) VALUES (?, ?)`;
 
-  if (!task_name || !status || !team_id) {
-    // Ensure team_id is included
-    console.error("Missing fields:", { task_name, status, team_id });
-    return res
-      .status(400)
-      .json({ error: "Task name, status, and team ID are required" });
+  // Extract values from request
+  const { task_name, description, status, team_name } = req.body;
+
+  const userId = req.user.userId;
+  console.log("Extracted User ID:", userId);
+
+  if (!task_name || !status || !team_name || !userId) {
+    return res.status(400).json({ error: "Missing required fields.." });
   }
 
-  const query = `INSERT INTO tasks (task_name, description, status, team_id) VALUES (?, ?, ?, ?)`;
+  db.execute(queryTeam, [team_name], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Database error", details: err });
+    }
 
-  db.execute(
-    query,
-    [task_name, description, status, team_id],
-    (err, results) => {
+    if (results.length === 0) {
+      return res.status(400).json({ error: "Team not found. Please use an existing team." });
+    }
+
+    const team_id = results[0].team_id;
+
+    // Insert the task and get the new task_id
+    db.execute(queryTask, [task_name, description ?? "", status, team_id], (err, results) => {
       if (err) {
         console.error("Database error:", err);
         return res.status(500).json({ error: "Database error", details: err });
       }
 
-      console.log("Task added successfully:", results);
-      res.status(201).json({
-        message: "Task added successfully",
-        task_id: results.insertId,
+      const task_id = results.insertId; 
+      
+      // Insert into taskassignments
+      db.execute(queryAssignment, [task_id, userId], (err) => {
+        if (err) {
+          console.error("Database error:", err);
+          return res.status(500).json({ error: "Database error", details: err });
+        }
+
+        console.log("Task and assignment added successfully.");
+        res.status(201).json({
+          message: "Task added successfully and assigned to user",
+          task_id,
+        });
       });
-    }
-  );
+    });
+  });
 });
 
-router.put("/tasks/:task_id", (req, res) => {
+router.put("/tasks/:task_id", authenticate, (req, res) => {
   const { task_id } = req.params;
   const { status } = req.body;
 
