@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Snackbar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
   const [name, setName] = useState('');
@@ -10,44 +11,41 @@ function Profile() {
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const [error, setError] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    console.log('Token:', token); // Log the token to verify it
-    if (!token) {
-      setError('No token found. Please log in.');
-      return;
-    }
-
-    fetch('http://localhost:3000/profile', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => {
-      console.log('Response status:', response.status); // Log the response status
-      if (!response.ok) {
-        return response.json().then((data) => {
-          throw new Error(data.message || 'Failed to fetch user info');
+    fetchProfile();
+    },[]);
+    const fetchProfile = () => {
+      const token = localStorage.getItem("token");
+      fetch('http://localhost:3000/api/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((response) => {
+          console.log('Response status:', response.status); // Log the response status
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.message || 'Failed to fetch user info');
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data.error) {
+            setError(data.error);
+          } else {
+            setName(data.username);
+            setEmail(data.email);
+          }
+        })
+        .catch((err) => {
+          console.error('Error fetching user info:', err.message);
+          setError('An error occurred while fetching user info. Please try again.');
         });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setName(data.username);
-        setEmail(data.email);
-      }
-    })
-    .catch((err) => {
-      console.error('Error fetching user info:', err.message);
-      setError('An error occurred while fetching user info. Please try again.');
-    });
-  }, []);
+  };
 
   const handlePasswordChange = () => {
     if (!currentPassword || !newPassword) {
@@ -60,10 +58,27 @@ function Profile() {
       return;
     }
 
-    // Implement password change logic here
-    console.log('Password changed');
-    setSnackbarOpen(true);
-    setError('');
+    const token = localStorage.getItem("token");
+    fetch('http://localhost:3000/api/passwordChange', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ oldPassword: currentPassword, newPassword }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setSnackbarOpen(true);
+          setError('');
+        }
+      })
+      .catch(() => {
+        setError('An error occurred while changing password. Please try again.');
+      });
   };
 
   const handleSnackbarClose = () => {
@@ -83,8 +98,33 @@ function Profile() {
   };
 
   const handleDeleteAccount = () => {
-    // Implement delete account logic here
-    console.log('Account deleted');
+    const token = localStorage.getItem("token");
+  
+    fetch('http://localhost:3000/api/deleteAccount', {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(async (response) => {
+        console.log("Response status:", response.status);
+        let data = await response.json();
+        console.log("Response data:", data);
+  
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to delete account");
+        }
+  
+        // Clear local storage and redirect to login page
+        localStorage.removeItem("token");
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Error deleting account:", error.message);
+        setError("An error occurred while deleting your account. Please try again.");
+      });
+  
     setDialogOpen(false);
     setDeleteSnackbarOpen(true);
   };

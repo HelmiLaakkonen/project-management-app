@@ -30,7 +30,7 @@ app.use("/users", usersRouter);
 app.use("/register", registerRouter);
 app.use("/api", authenticate, tasksRouter);
 app.use("/api", authenticate, teamsRouter);
-app.use('/profile', profileRouter);
+app.use('/api', authenticate, profileRouter);
 
 console.log("Server is running...");
 
