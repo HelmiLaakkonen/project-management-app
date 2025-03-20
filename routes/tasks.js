@@ -57,28 +57,32 @@ router.post("/tasks", authenticate, (req, res) => {
       queryTask,
       [task_name, description ?? "", status, team_id, due_date],
       (err, results) => {
-    db.execute(queryTask, [task_name, description ?? "", status, team_id, due_date], (err, results) => {
-      if (err) {
-        console.error("Database error:", err);
-        return res.status(500).json({ error: "Database error", details: err });
-      }
-
-      const task_id = results.insertId; 
-      
-      // Insert into taskassignments
-      db.execute(queryAssignment, [task_id, userId], (err) => {
         if (err) {
           console.error("Database error:", err);
-          return res.status(500).json({ error: "Database error", details: err });
+          return res
+            .status(500)
+            .json({ error: "Database error", details: err });
         }
 
-        console.log("Task and assignment added successfully.");
-        res.status(201).json({
-          message: "Task added successfully and assigned to user",
-          task_id,
+        const task_id = results.insertId;
+
+        // Insert into taskassignments
+        db.execute(queryAssignment, [task_id, userId], (err) => {
+          if (err) {
+            console.error("Database error:", err);
+            return res
+              .status(500)
+              .json({ error: "Database error", details: err });
+          }
+
+          console.log("Task and assignment added successfully.");
+          res.status(201).json({
+            message: "Task added successfully and assigned to user",
+            task_id,
+          });
         });
-      });
-    });
+      }
+    );
   });
 });
 

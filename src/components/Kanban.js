@@ -77,13 +77,6 @@ function Kanban() {
           team_name: "",
           due_date: "",
         });
-        setNewTask({
-          task_name: "",
-          description: "",
-          status: "pending",
-          team_name: "",
-          due_date: "",
-        });
       })
       .catch((error) => console.error("Error adding task:", error));
   };
