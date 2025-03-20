@@ -25,13 +25,13 @@ router.get("/tasks", authenticate, (req, res) => {
 
 router.post("/tasks", authenticate, (req, res) => {
   const queryTeam = `SELECT team_id FROM teams WHERE team_name = ?`;
-  const queryTask = `INSERT INTO tasks (task_name, description, status, team_id) VALUES (?, ?, ?, ?)`;
+  const queryTask = `INSERT INTO tasks (task_name, description, status, team_id, due_date) VALUES (?, ?, ?, ?, ?)`;
   const queryAssignment = `INSERT INTO taskassignments (task_id, user_id) VALUES (?, ?)`;
 
   // Extract values from request
-  const { task_name, description, status, team_name } = req.body;
-
+  const { task_name, description, status, team_name, due_date } = req.body;
   const userId = req.user.userId;
+
   console.log("Extracted User ID:", userId);
 
   if (!task_name || !status || !team_name || !userId) {
@@ -55,7 +55,7 @@ router.post("/tasks", authenticate, (req, res) => {
     // Insert the task and get the new task_id
     db.execute(
       queryTask,
-      [task_name, description ?? "", status, team_id],
+      [task_name, description ?? "", status, team_id, due_date],
       (err, results) => {
         if (err) {
           console.error("Database error:", err);
@@ -102,7 +102,7 @@ router.put("/tasks/:task_id", authenticate, (req, res) => {
       if (result.affectedRows === 0) {
         return res.status(404).json({ error: "Task not found" });
       }
-      res.json({ message: "Task updated succesfully" });
+      res.json({ message: "Task updated successfully" });
     }
   );
 });

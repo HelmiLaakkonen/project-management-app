@@ -12,38 +12,43 @@ const fontStyle = {
   fontFamily: `"Poppins", sans-serif`, // Elegant, rounded font
 };
 
-// 🔹 Custom Day Component to Show Dots for Task Days
+// ✅ Custom Day Component - **Wrap Date in Box with Red Dot**
 function CustomDay(props) {
-  const { day, tasks, ...other } = props;
+  const { day, tasks, selected, ...other } = props;
   const formattedDate = day.format("YYYY-MM-DD");
 
   // ✅ Check if this day has tasks
   const hasTask = tasks.includes(formattedDate);
 
   return (
-    <PickersDay
-      {...other}
-      day={day}
-      sx={{
-        position: "relative",
-        fontWeight: "600",
-        color: "#333",
-        fontFamily: `"Poppins", sans-serif`,
-        "&::after": hasTask
-          ? {
-              content: '""',
-              position: "absolute",
-              bottom: "4px",
-              left: "50%",
-              width: "6px",
-              height: "6px",
-              borderRadius: "50%",
-              transform: "translateX(-50%)",
-              backgroundColor: "#d63384",
-            }
-          : {},
-      }}
-    />
+    <Box
+      sx={{ position: "relative", display: "flex", justifyContent: "center" }}
+    >
+      <PickersDay
+        {...other}
+        day={day}
+        selected={selected}
+        sx={{
+          fontWeight: "600",
+          color: selected ? "#fff" : "#333",
+          backgroundColor: selected ? "#d63384 !important" : "inherit",
+          fontFamily: `"Poppins", sans-serif`,
+        }}
+      />
+      {/* ✅ Guaranteed Red Dot */}
+      {hasTask && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "5px", // Moves dot above the number
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            backgroundColor: "#d63384",
+          }}
+        />
+      )}
+    </Box>
   );
 }
 
@@ -85,19 +90,12 @@ function Calendar() {
     fetchTasks();
   }, []);
 
-  // ✅ Extract only unique task creation dates
+  // ✅ Extract unique task creation dates
   const taskDates = [
     ...new Set(
       tasks.map((task) => dayjs.utc(task.created_at).format("YYYY-MM-DD"))
     ),
   ];
-
-  // ✅ Filter tasks for the currently selected date
-  const tasksForSelectedDate = tasks.filter(
-    (task) =>
-      dayjs.utc(task.created_at).format("YYYY-MM-DD") ===
-      selectedDate.format("YYYY-MM-DD")
-  );
 
   return (
     <Container
@@ -163,7 +161,11 @@ function Calendar() {
           >
             Tasks on {selectedDate.format("YYYY-MM-DD")}
           </Typography>
-          {tasksForSelectedDate.length > 0 ? (
+          {tasks.filter(
+            (task) =>
+              dayjs.utc(task.created_at).format("YYYY-MM-DD") ===
+              selectedDate.format("YYYY-MM-DD")
+          ).length > 0 ? (
             <ul
               style={{
                 padding: "10px",
@@ -172,12 +174,20 @@ function Calendar() {
                 ...fontStyle,
               }}
             >
-              {tasksForSelectedDate.map((task) => (
-                <li key={task.task_id} style={{ paddingBottom: "5px" }}>
-                  <strong style={{ color: "#b80d57" }}>{task.task_name}</strong>{" "}
-                  - {task.description}
-                </li>
-              ))}
+              {tasks
+                .filter(
+                  (task) =>
+                    dayjs.utc(task.created_at).format("YYYY-MM-DD") ===
+                    selectedDate.format("YYYY-MM-DD")
+                )
+                .map((task) => (
+                  <li key={task.task_id} style={{ paddingBottom: "5px" }}>
+                    <strong style={{ color: "#b80d57" }}>
+                      {task.task_name}
+                    </strong>{" "}
+                    - {task.description}
+                  </li>
+                ))}
             </ul>
           ) : (
             <Typography
