@@ -149,6 +149,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Calender />
             </Layout>
@@ -166,6 +167,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Roadmap />
             </Layout>
@@ -183,6 +185,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Notifications />
             </Layout>
@@ -200,6 +203,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Profile />
             </Layout>
@@ -217,6 +221,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Teams />
             </Layout>
