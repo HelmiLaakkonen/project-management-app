@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const loginRouter = require("./routes/login");
 const usersRouter = require("./routes/users");
 const registerRouter = require("./routes/register");
+const profileRouter = require("./routes/profile");
 const bodyParser = require("body-parser");
 const db = require("./db/connection");
 const cors = require("cors");
@@ -29,6 +30,7 @@ app.use("/users", usersRouter);
 app.use("/register", registerRouter);
 app.use("/api", authenticate, tasksRouter);
 app.use("/api", authenticate, teamsRouter);
+app.use("/api", authenticate, profileRouter);
 
 console.log("Server is running...");
 
@@ -39,4 +41,5 @@ app.listen(PORT, () => {
   console.log("Login: http://localhost:" + PORT + "/login");
   console.log("Users: http://localhost:" + PORT + "/users");
   console.log("Register: http://localhost:" + PORT + "/register");
+  console.log("Profile: http://localhost:" + PORT + "/profile");
 });

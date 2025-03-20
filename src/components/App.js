@@ -15,9 +15,8 @@ import Roadmap from "./Roadmap";
 import Footer from "./Footer";
 import Register from "./Register";
 import Login from "./Login";
-import Profile from "./Profile";
 import Notifications from "./Notifications";
-import Teams from "./Teams";
+import UserDashboard from "./UserDashboard";
 
 // Layout component with a sticky footer
 function Layout({
@@ -120,7 +119,7 @@ function App() {
         element={<Register setAuth={setIsAuthenticated} />}
       />
 
-      {/* Wrap all authenticated pages in Layout */}
+      {/* Authenticated routes */}
       <Route
         path="/dashboard"
         element={
@@ -149,6 +148,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Calender />
             </Layout>
@@ -166,6 +166,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Roadmap />
             </Layout>
@@ -174,8 +175,9 @@ function App() {
           )
         }
       />
+
       <Route
-        path="/notifications"
+        path="/user-dashboard" // NEW ROUTE FOR COMBINED PROFILE + TEAMS
         element={
           isAuthenticated ? (
             <Layout
@@ -183,42 +185,9 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
-              <Notifications />
-            </Layout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          isAuthenticated ? (
-            <Layout
-              sidebarOpen={sidebarOpen}
-              toggleSidebar={toggleSidebar}
-              notificationsOpen={notificationsOpen}
-              toggleNotifications={toggleNotifications}
-            >
-              <Profile />
-            </Layout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/teams"
-        element={
-          isAuthenticated ? (
-            <Layout
-              sidebarOpen={sidebarOpen}
-              toggleSidebar={toggleSidebar}
-              notificationsOpen={notificationsOpen}
-              toggleNotifications={toggleNotifications}
-            >
-              <Teams />
+              <UserDashboard />
             </Layout>
           ) : (
             <Navigate to="/login" />

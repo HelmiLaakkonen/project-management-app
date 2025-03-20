@@ -52,20 +52,15 @@ function SideBar({ open, toggleSidebar }) {
         onClose={toggleSidebar}
       >
         <List sx={{ paddingTop: 8 }}>
-          <ListItem button component={Link} to="/">
-            <ListItemText primary="Home" sx={{ color: "#e0218a" }} />
+          <ListItem button component={Link} to="/dashboard">
+            <ListItemText primary="Dashboard" sx={{ color: "#e0218a" }} />
           </ListItem>
-          <ListItem button component={Link} to="/calender">
-            <ListItemText primary="Calendar" sx={{ color: "#e0218a" }} />
-          </ListItem>
+
           <ListItem button component={Link} to="/roadmap">
-            <ListItemText primary="Roadmap" />
+            <ListItemText primary="Calendar & Roadmap" />
           </ListItem>
-          <ListItem button component={Link} to="/profile">
-            <ListItemText primary="Profile" sx={{ color: "#e0218a" }} />
-          </ListItem>
-          <ListItem button component={Link} to="/teams">
-            <ListItemText primary="Teams" sx={{ color: "#e0218a" }} />
+          <ListItem button component={Link} to="/user-dashboard">
+            <ListItemText primary="Profile & Teams" sx={{ color: "#e0218a" }} />
           </ListItem>
         </List>
       </Drawer>
