@@ -300,7 +300,7 @@ export default function TeamsList() {
             color="secondary"
             onClick={handleDeleteTeam}
             sx={{
-              marginTop: 3,
+              marginTop: 2,
               backgroundColor: "#ff6961",
               color: "white",
               fontWeight: "bold",
@@ -323,7 +323,6 @@ export default function TeamsList() {
           </Button>
         </Box>
       </Modal>
-    </Box>
+      </Box>
   );
 }
-s
