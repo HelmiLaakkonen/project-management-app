@@ -32,12 +32,6 @@ export default function UserDashboard() {
           md={6.8}
           sx={{ display: "flex", flexDirection: "column", height: "100%" }}
         >
-          <Typography
-            variant="h5"
-            sx={{ fontWeight: "bold", color: "#d63384", mb: 2 }}
-          >
-            User Profile
-          </Typography>
           <Box
             sx={{
               flexGrow: 1,
@@ -57,17 +51,6 @@ export default function UserDashboard() {
           md={3.2}
           sx={{ display: "flex", flexDirection: "column", height: "100%" }}
         >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: "bold",
-              color: "#d63384",
-              mb: 2,
-              textAlign: "center",
-            }}
-          >
-            Teams
-          </Typography>
           <Box
             sx={{
               flexGrow: 1,

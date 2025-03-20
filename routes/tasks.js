@@ -7,7 +7,7 @@ const authenticate = require("../middleware/authenticate");
 router.get("/tasks", authenticate, (req, res) => {
   const userId = req.user.userId;
   const query = `
-    SELECT tasks.task_id, tasks.task_name, tasks.description, tasks.team_id, tasks.status
+    SELECT tasks.task_id, tasks.task_name, tasks.description, tasks.team_id, tasks.status, tasks.created_at, tasks.due_date
     FROM tasks
     JOIN taskassignments ON tasks.task_id = taskassignments.task_id
     WHERE taskassignments.user_id = ?;
@@ -18,6 +18,7 @@ router.get("/tasks", authenticate, (req, res) => {
       console.error("Database error:", err);
       return res.status(500).json({ error: "Database query failed" });
     }
+    console.log("✅ Fetched Tasks:", results); // Debugging: Check if created_at exists
     res.json({ tasks: results });
   });
 });
@@ -44,34 +45,44 @@ router.post("/tasks", authenticate, (req, res) => {
     }
 
     if (results.length === 0) {
-      return res.status(400).json({ error: "Team not found. Please use an existing team." });
+      return res
+        .status(400)
+        .json({ error: "Team not found. Please use an existing team." });
     }
 
     const team_id = results[0].team_id;
 
     // Insert the task and get the new task_id
-    db.execute(queryTask, [task_name, description ?? "", status, team_id], (err, results) => {
-      if (err) {
-        console.error("Database error:", err);
-        return res.status(500).json({ error: "Database error", details: err });
-      }
-
-      const task_id = results.insertId; 
-      
-      // Insert into taskassignments
-      db.execute(queryAssignment, [task_id, userId], (err) => {
+    db.execute(
+      queryTask,
+      [task_name, description ?? "", status, team_id],
+      (err, results) => {
         if (err) {
           console.error("Database error:", err);
-          return res.status(500).json({ error: "Database error", details: err });
+          return res
+            .status(500)
+            .json({ error: "Database error", details: err });
         }
 
-        console.log("Task and assignment added successfully.");
-        res.status(201).json({
-          message: "Task added successfully and assigned to user",
-          task_id,
+        const task_id = results.insertId;
+
+        // Insert into taskassignments
+        db.execute(queryAssignment, [task_id, userId], (err) => {
+          if (err) {
+            console.error("Database error:", err);
+            return res
+              .status(500)
+              .json({ error: "Database error", details: err });
+          }
+
+          console.log("Task and assignment added successfully.");
+          res.status(201).json({
+            message: "Task added successfully and assigned to user",
+            task_id,
+          });
         });
-      });
-    });
+      }
+    );
   });
 });
 

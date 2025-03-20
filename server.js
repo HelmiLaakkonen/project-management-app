@@ -4,7 +4,7 @@ const loginRouter = require("./routes/login");
 const usersRouter = require("./routes/users");
 const registerRouter = require("./routes/register");
 const profileRouter = require("./routes/profile");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const db = require("./db/connection");
 const cors = require("cors");
 const tasksRouter = require("./routes/tasks");
@@ -30,7 +30,7 @@ app.use("/users", usersRouter);
 app.use("/register", registerRouter);
 app.use("/api", authenticate, tasksRouter);
 app.use("/api", authenticate, teamsRouter);
-app.use('/api', authenticate, profileRouter);
+app.use("/api", authenticate, profileRouter);
 
 console.log("Server is running...");
 

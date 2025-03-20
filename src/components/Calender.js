@@ -54,17 +54,31 @@ function Calendar() {
   useEffect(() => {
     async function fetchTasks() {
       const token = localStorage.getItem("token");
+      if (!token) {
+        console.error(
+          "❌ No token found in localStorage. User might not be logged in."
+        );
+        return;
+      }
+
       try {
         const response = await fetch("http://localhost:3000/api/tasks", {
+          method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // ✅ Ensure token is sent
             "Content-Type": "application/json",
           },
         });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
         const data = await response.json();
+        console.log("✅ Fetched tasks:", data); // Debugging: Check response
         setTasks(data.tasks || []);
       } catch (error) {
-        console.error("Error fetching tasks:", error);
+        console.error("❌ Error fetching tasks:", error.message);
       }
     }
 
