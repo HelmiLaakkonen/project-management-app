@@ -26,7 +26,7 @@ function Kanban() {
 
   const fetchTasks = useCallback(() => {
     const token = localStorage.getItem("token");
-  
+
     fetch("http://localhost:3000/api/tasks", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -37,20 +37,22 @@ function Kanban() {
       .then((data) => {
         const groupedTasks = {
           todo: (data.tasks || []).filter((task) => task.status === "pending"),
-          inProgress: (data.tasks || []).filter((task) => task.status === "in_progress"),
-          ready: (data.tasks || []).filter((task) => task.status === "completed"),
+          inProgress: (data.tasks || []).filter(
+            (task) => task.status === "in_progress"
+          ),
+          ready: (data.tasks || []).filter(
+            (task) => task.status === "completed"
+          ),
         };
-  
-        setTasks({ ...groupedTasks }); // Force state update
+
+        setTasks({ ...groupedTasks }); // Update the state
       })
-      .catch((error) => console.error(" Error fetching tasks:", error));
+      .catch((error) => console.error("Error fetching tasks:", error));
   }, []);
-  
+
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
- 
-  
 
   // ✅ Add new task
   const handleAddTask = () => {
@@ -68,7 +70,12 @@ function Kanban() {
       .then((response) => response.json())
       .then(() => {
         fetchTasks(); // Refresh tasks after adding
-        setNewTask({ task_name: "", description: "", status: "pending", team_name: "" });
+        setNewTask({
+          task_name: "",
+          description: "",
+          status: "pending",
+          team_name: "",
+        });
       })
       .catch((error) => console.error("Error adding task:", error));
   };
@@ -125,7 +132,7 @@ function Kanban() {
       .catch((error) => console.error("❌ Error updating task status:", error));
   };
 
-  // ✅ Styling
+  // ✅ Styling (More Compact)
   const Item = styled(Paper)(({ status }) => ({
     backgroundColor:
       status === "pending"
@@ -133,17 +140,19 @@ function Kanban() {
         : status === "in_progress"
         ? "#e8f7f8"
         : "#ecfbe8",
-    padding: 8,
+    padding: "6px", // Reduced padding
+    fontSize: "0.9rem", // Smaller text
     textAlign: "center",
     color: "black",
-    marginBottom: "8px",
+    marginBottom: "6px", // Tighter spacing between tasks
   }));
 
   const Column = styled(Paper)(({ bgColor }) => ({
     backgroundColor: bgColor,
-    padding: "16px",
-    minHeight: "300px",
-    width: "300px", // Consistent column width
+    padding: "12px", // Less padding to save space
+    minHeight: "280px", // Reduced height to fit better
+    width: "240px", // Compact width (previously 300px)
+    borderRadius: "8px", // Slightly smaller border
   }));
 
   return (
@@ -159,7 +168,7 @@ function Kanban() {
       }}
     >
       <Box
-        sx={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}
+        sx={{ display: "flex", flexDirection: "column", gap: 3, flexGrow: 1 }}
       >
         {/* Task Input Form */}
         <Box
@@ -169,7 +178,7 @@ function Kanban() {
             mb: 2,
             backgroundColor: "#fce4ec",
             padding: 2,
-            borderRadius: "12px",
+            borderRadius: "10px",
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
             alignItems: "center",
           }}
@@ -217,8 +226,8 @@ function Kanban() {
               backgroundColor: "#f48fb1",
               color: "white",
               fontWeight: "bold",
-              padding: "10px 20px",
-              borderRadius: "10px",
+              padding: "8px 16px",
+              borderRadius: "8px",
               textTransform: "none",
               "&:hover": {
                 backgroundColor: "#d81b60",
@@ -231,7 +240,7 @@ function Kanban() {
 
         {/* Drag & Drop Kanban Board */}
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Grid2 container spacing={4} justifyContent="center">
+          <Grid2 container spacing={3} justifyContent="center">
             {Object.entries(tasks).map(([columnId, columnTasks]) => (
               <Grid2 item key={columnId}>
                 <Column

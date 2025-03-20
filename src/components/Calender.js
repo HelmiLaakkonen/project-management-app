@@ -12,12 +12,12 @@ const fontStyle = {
   fontFamily: `"Poppins", sans-serif`, // Elegant, rounded font
 };
 
-// Custom Day Component to Show Dots for Task Days
+// 🔹 Custom Day Component to Show Dots for Task Days
 function CustomDay(props) {
   const { day, tasks, ...other } = props;
   const formattedDate = day.format("YYYY-MM-DD");
 
-  // Check if this day has tasks
+  // ✅ Check if this day has tasks
   const hasTask = tasks.includes(formattedDate);
 
   return (
@@ -71,9 +71,18 @@ function Calendar() {
     fetchTasks();
   }, []);
 
-  // Get dates with tasks
-  const taskDates = tasks.map((task) =>
-    dayjs.utc(task.created_at).format("YYYY-MM-DD")
+  // ✅ Extract only unique task creation dates
+  const taskDates = [
+    ...new Set(
+      tasks.map((task) => dayjs.utc(task.created_at).format("YYYY-MM-DD"))
+    ),
+  ];
+
+  // ✅ Filter tasks for the currently selected date
+  const tasksForSelectedDate = tasks.filter(
+    (task) =>
+      dayjs.utc(task.created_at).format("YYYY-MM-DD") ===
+      selectedDate.format("YYYY-MM-DD")
   );
 
   return (
@@ -140,11 +149,7 @@ function Calendar() {
           >
             Tasks on {selectedDate.format("YYYY-MM-DD")}
           </Typography>
-          {tasks.filter(
-            (task) =>
-              dayjs.utc(task.created_at).format("YYYY-MM-DD") ===
-              selectedDate.format("YYYY-MM-DD")
-          ).length > 0 ? (
+          {tasksForSelectedDate.length > 0 ? (
             <ul
               style={{
                 padding: "10px",
@@ -153,20 +158,12 @@ function Calendar() {
                 ...fontStyle,
               }}
             >
-              {tasks
-                .filter(
-                  (task) =>
-                    dayjs.utc(task.created_at).format("YYYY-MM-DD") ===
-                    selectedDate.format("YYYY-MM-DD")
-                )
-                .map((task) => (
-                  <li key={task.task_id} style={{ paddingBottom: "5px" }}>
-                    <strong style={{ color: "#b80d57" }}>
-                      {task.task_name}
-                    </strong>{" "}
-                    - {task.description}
-                  </li>
-                ))}
+              {tasksForSelectedDate.map((task) => (
+                <li key={task.task_id} style={{ paddingBottom: "5px" }}>
+                  <strong style={{ color: "#b80d57" }}>{task.task_name}</strong>{" "}
+                  - {task.description}
+                </li>
+              ))}
             </ul>
           ) : (
             <Typography

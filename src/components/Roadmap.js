@@ -55,8 +55,6 @@ function Roadmap() {
 
       {tasks.length > 0 ? (
         <Timeline position="alternate">
-          {" "}
-          {/* This makes it vertical */}
           {tasks.map((task, index) => (
             <TimelineItem key={task.task_id}>
               <TimelineSeparator>

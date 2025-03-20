@@ -1,9 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import { Container, Box, Grid2, Paper } from "@mui/material";
+import { Container, Box, Grid, Paper } from "@mui/material";
 import Calender from "./Calender";
 import Login from "./Login";
 import Kanban from "./Kanban";
-import Roadmap from "./Roadmap";
 
 function Layout({ children }) {
   return (
@@ -25,59 +24,55 @@ function Layout({ children }) {
 function DashboardContent() {
   return (
     <Container
-      maxWidth="xl" // Increased from "lg" to "xl" for better content fit
-      sx={{ mt: 3, px: 1 }}
+      maxWidth="xl"
+      sx={{
+        mt: 3,
+        px: 1,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
     >
-      <Grid2 container spacing={2}>
-        {/* LEFT SIDE: Kanban + Calendar inside one box */}
-        <Grid2 item xs={12} md={8}>
-          <Paper
-            sx={{
-              padding: 2,
-              borderRadius: "12px",
-              boxShadow: 3,
-              backgroundColor: "#fff5f8",
-            }}
-          >
-            <Grid2 container spacing={1.5}>
-              {/* Kanban Board - Now takes more space */}
-              <Grid2 item xs={12} md={7}>
-                <Box sx={{ minHeight: "500px" }}>
-                  <Kanban />
-                </Box>
-              </Grid2>
+      <Paper
+        sx={{
+          padding: 3,
+          borderRadius: "12px",
+          boxShadow: 3,
+          backgroundColor: "#fff5f8",
+          minHeight: "600px", // Ensures uniform height
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            alignItems: "stretch",
+            justifyContent: "center",
+            flexWrap: { xs: "wrap", md: "nowrap" }, // Stack on small screens, side-by-side on large
+          }}
+        >
+          {/* Kanban Section */}
+          <Grid item xs={12} md={7.5}>
+            <Box sx={{ minHeight: "500px" }}>
+              <Kanban />
+            </Box>
+          </Grid>
 
-              {/* Calendar - Given more space */}
-              <Grid2 item xs={12} md={5}>
-                <Box
-                  sx={{
-                    minHeight: "500px",
-                    maxWidth: "100%",
-                    overflow: "hidden",
-                  }}
-                >
-                  <Calender />
-                </Box>
-              </Grid2>
-            </Grid2>
-          </Paper>
-        </Grid2>
-
-        {/* RIGHT SIDE: Task Roadmap (full height) */}
-        <Grid2 item xs={12} md={4}>
-          <Paper
-            sx={{
-              padding: 2,
-              borderRadius: "12px",
-              boxShadow: 3,
-              backgroundColor: "#fff5f8",
-              minHeight: "100%",
-            }}
-          >
-            <Roadmap />
-          </Paper>
-        </Grid2>
-      </Grid2>
+          {/* Calendar Section */}
+          <Grid item xs={12} md={4.5}>
+            <Box
+              sx={{
+                minHeight: "500px",
+                overflow: "hidden",
+              }}
+            >
+              <Calender />
+            </Box>
+          </Grid>
+        </Grid>
+      </Paper>
     </Container>
   );
 }

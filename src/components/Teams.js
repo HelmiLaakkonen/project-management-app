@@ -1,60 +1,18 @@
 import { useState, useEffect } from "react";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
-
-const Column = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  backgroundColor: "#fce4ec", // Soft pastel pink
-  borderRadius: "12px",
-  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-  minHeight: "200px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "100%",
-}));
-
-const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(1),
-  marginBottom: theme.spacing(1),
-  width: "80%",
-  textAlign: "center",
-  cursor: "pointer",
-  backgroundColor: "#ffebee",
-  borderRadius: "8px",
-  "&:hover": {
-    backgroundColor: "#ffcdd2",
-  },
-}));
-
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "#fff5f8", // Soft pastel background
-  boxShadow: 24,
-  p: 4,
-  borderRadius: "12px",
-};
+import {
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Divider,
+} from "@mui/material";
+import GroupIcon from "@mui/icons-material/Group"; // Team icon
 
 export default function TeamsList() {
   const [teams, setTeams] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [newTeam, setNewTeam] = useState("");
   const [adding, setAdding] = useState(false);
-  const [selectedTeam, setSelectedTeam] = useState(null);
-  const [teamMembers, setTeamMembers] = useState([]);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchTeams();
@@ -72,12 +30,8 @@ export default function TeamsList() {
       .then((response) => response.json())
       .then((data) => {
         setTeams(data.teams || []);
-        setLoading(false);
       })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
+      .catch((error) => console.error("Error fetching teams:", error));
   };
 
   const handleAddTeam = () => {
@@ -106,50 +60,121 @@ export default function TeamsList() {
   };
 
   return (
-    <Grid container spacing={2} justifyContent="center">
-      <Grid item xs={6}>
-        <Column elevation={3}>
-          <Typography variant="h6" align="center" gutterBottom>
-            Existing Teams
-          </Typography>
-          {teams.length > 0 ? (
-            teams.map((team, index) => (
-              <Item key={index} elevation={3}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        minHeight: "80vh",
+        mt: 4,
+      }}
+    >
+      <Paper
+        elevation={5}
+        sx={{
+          padding: 4,
+          width: "500px",
+          borderRadius: "16px",
+          backgroundColor: "#fff5f8", // Soft pastel pink like Profile
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", // Elegant shadow
+        }}
+      >
+        <Typography
+          variant="h4"
+          align="center"
+          sx={{ fontWeight: "bold", color: "#d63384" }}
+        >
+          Teams
+        </Typography>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Existing Teams Section */}
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: "bold", color: "#d63384", mb: 2 }}
+        >
+          Existing Teams
+        </Typography>
+        {teams.length > 0 ? (
+          <Box>
+            {teams.map((team, index) => (
+              <Paper
+                key={index}
+                elevation={3}
+                sx={{
+                  padding: 1.5,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  backgroundColor: "#ffeff4",
+                  borderRadius: "10px",
+                  mb: 1.5,
+                  transition: "0.3s",
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "#ffcdd2",
+                    transform: "scale(1.05)",
+                  },
+                }}
+              >
+                <GroupIcon sx={{ color: "#b80d57", marginRight: "10px" }} />
                 {team?.team_name ?? "No Name Available"}
-              </Item>
-            ))
-          ) : (
-            <Typography>No teams found.</Typography>
-          )}
-        </Column>
-      </Grid>
-      <Grid item xs={6}>
-        <Column elevation={3}>
-          <Typography variant="h6" align="center" gutterBottom>
-            Add New Team
+              </Paper>
+            ))}
+          </Box>
+        ) : (
+          <Typography sx={{ color: "#666", textAlign: "center" }}>
+            No teams found.
           </Typography>
-          <TextField
-            label="Team Name"
-            variant="outlined"
-            fullWidth
-            value={newTeam}
-            onChange={(e) => setNewTeam(e.target.value)}
-            sx={{ backgroundColor: "white", borderRadius: "8px" }}
-          />
-          <Button
-            variant="contained"
-            sx={{
-              marginTop: 2,
-              backgroundColor: "#f48fb1",
-              "&:hover": { backgroundColor: "#d81b60" },
-            }}
-            onClick={handleAddTeam}
-            disabled={adding}
-          >
-            {adding ? "Adding..." : "Add Team"}
-          </Button>
-        </Column>
-      </Grid>
-    </Grid>
+        )}
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Add New Team Section */}
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: "bold", color: "#d63384", mt: 2 }}
+        >
+          Add New Team
+        </Typography>
+        <TextField
+          label="Team Name"
+          variant="outlined"
+          fullWidth
+          value={newTeam}
+          onChange={(e) => setNewTeam(e.target.value)}
+          sx={{
+            mt: 2,
+            backgroundColor: "white",
+            borderRadius: "8px",
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": { borderColor: "#ff85a2" },
+              "&.Mui-focused fieldset": { borderColor: "#ff4d7a" },
+            },
+          }}
+        />
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{
+            mt: 2,
+            backgroundColor: "#f48fb1",
+            color: "white",
+            fontWeight: "bold",
+            borderRadius: "10px",
+            textTransform: "none",
+            transition: "0.3s",
+            "&:hover": { backgroundColor: "#d81b60" },
+          }}
+          onClick={handleAddTeam}
+          disabled={adding}
+        >
+          {adding ? "Adding..." : "Add Team"}
+        </Button>
+      </Paper>
+    </Box>
   );
 }
