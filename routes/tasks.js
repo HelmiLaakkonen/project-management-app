@@ -18,6 +18,7 @@ router.get("/tasks", authenticate, (req, res) => {
       console.error("Database error:", err);
       return res.status(500).json({ error: "Database query failed" });
     }
+    console.log("✅ Fetched Tasks:", results); // Debugging: Check if created_at exists
     res.json({ tasks: results });
   });
 });
@@ -44,7 +45,9 @@ router.post("/tasks", authenticate, (req, res) => {
     }
 
     if (results.length === 0) {
-      return res.status(400).json({ error: "Team not found. Please use an existing team." });
+      return res
+        .status(400)
+        .json({ error: "Team not found. Please use an existing team." });
     }
 
     const team_id = results[0].team_id;
