@@ -11,7 +11,7 @@ const Column = styled(Paper)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   width: "100%",
-  borderRadius: "16px", // Add rounded corners to the Paper component
+  borderRadius: "16px", 
 }));
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -20,10 +20,10 @@ const Item = styled(Paper)(({ theme }) => ({
   width: "80%",
   textAlign: "center",
   cursor: "pointer",
-  borderRadius: "8px", // Add rounded corners to each item
-  transition: "all 0.3s ease", // Add smooth transition effect
+  borderRadius: "8px", 
+  transition: "all 0.3s ease", 
   "&:hover": {
-    backgroundColor: "#fce4ec", // Change background on hover
+    backgroundColor: "#fce4ec", 
   },
 }));
 
@@ -36,7 +36,7 @@ const modalStyle = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
-  borderRadius: "16px", // Add rounded corners to the modal
+  borderRadius: "16px", 
 };
 
 export default function TeamsList() {
@@ -326,3 +326,4 @@ export default function TeamsList() {
     </Box>
   );
 }
+s
