@@ -59,13 +59,14 @@ function Profile() {
       setError("Both fields are required");
       return;
     }
-
+  
     if (currentPassword === newPassword) {
       setError("New password must be different from the current password");
       return;
     }
-
+  
     const token = localStorage.getItem("token");
+  
     fetch("http://localhost:3000/api/passwordChange", {
       method: "POST",
       headers: {
@@ -76,21 +77,19 @@ function Profile() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.error) {
-          setError(data.error);
-        } else {
+        if (data.message === "Password updated successfully") {
           setSnackbarOpen(true);
-          setError("");
+          setError(""); // Reset error message
           setCurrentPassword("");
           setNewPassword("");
+        } else if (data.error || data.message) {
+          setError(data.message); // Show error message from the server
         }
       })
       .catch(() => {
-        setError(
-          "An error occurred while changing the password. Please try again."
-        );
+        setError("An error occurred while changing the password. Please try again.");
       });
-  };
+};
 
   const handleDeleteAccount = () => {
     const token = localStorage.getItem("token");
