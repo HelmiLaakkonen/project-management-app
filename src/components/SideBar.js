@@ -59,7 +59,7 @@ function SideBar({ open, toggleSidebar }) {
             <ListItemText primary="Calendar" sx={{ color: "#e0218a" }} />
           </ListItem>
           <ListItem button component={Link} to="/roadmap">
-            <ListItemText primary="Roadmap" />
+            <ListItemText primary="Calendar & Roadmap" />
           </ListItem>
           <ListItem button component={Link} to="/user-dashboard">
             <ListItemText primary="Profile & Teams" sx={{ color: "#e0218a" }} />
