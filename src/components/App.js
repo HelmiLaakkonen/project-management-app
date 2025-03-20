@@ -187,7 +187,7 @@ function App() {
               toggleNotifications={toggleNotifications}
               setAuth={setIsAuthenticated}
             >
-              <Notifications />
+              <UserDashboard />
             </Layout>
           ) : (
             <Navigate to="/login" />
