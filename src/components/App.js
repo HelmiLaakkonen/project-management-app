@@ -16,7 +16,7 @@ import Footer from "./Footer";
 import Register from "./Register";
 import Login from "./Login";
 import Notifications from "./Notifications";
-import UserDashboard from "./UserDashboard"; // Import new UserDashboard
+import UserDashboard from "./UserDashboard";
 
 // Layout component with a sticky footer
 function Layout({
@@ -188,42 +188,6 @@ function App() {
               setAuth={setIsAuthenticated}
             >
               <Notifications />
-            </Layout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/profile"
-        element={
-          isAuthenticated ? (
-            <Layout
-              sidebarOpen={sidebarOpen}
-              toggleSidebar={toggleSidebar}
-              notificationsOpen={notificationsOpen}
-              toggleNotifications={toggleNotifications}
-              setAuth={setIsAuthenticated}
-            >
-              <Profile />
-            </Layout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/teams"
-        element={
-          isAuthenticated ? (
-            <Layout
-              sidebarOpen={sidebarOpen}
-              toggleSidebar={toggleSidebar}
-              notificationsOpen={notificationsOpen}
-              toggleNotifications={toggleNotifications}
-              setAuth={setIsAuthenticated}
-            >
-              <Teams />
             </Layout>
           ) : (
             <Navigate to="/login" />
