@@ -7,7 +7,7 @@ const authenticate = require("../middleware/authenticate");
 router.get("/tasks", authenticate, (req, res) => {
   const userId = req.user.userId;
   const query = `
-    SELECT tasks.task_id, tasks.task_name, tasks.description, tasks.team_id, tasks.status
+    SELECT tasks.task_id, tasks.task_name, tasks.description, tasks.team_id, tasks.status, tasks.created_at, tasks.due_date
     FROM tasks
     JOIN taskassignments ON tasks.task_id = taskassignments.task_id
     WHERE taskassignments.user_id = ?;
@@ -24,11 +24,11 @@ router.get("/tasks", authenticate, (req, res) => {
 
 router.post("/tasks", authenticate, (req, res) => {
   const queryTeam = `SELECT team_id FROM teams WHERE team_name = ?`;
-  const queryTask = `INSERT INTO tasks (task_name, description, status, team_id) VALUES (?, ?, ?, ?)`;
+  const queryTask = `INSERT INTO tasks (task_name, description, status, team_id, due_date) VALUES (?, ?, ?, ?, ?)`;
   const queryAssignment = `INSERT INTO taskassignments (task_id, user_id) VALUES (?, ?)`;
 
   // Extract values from request
-  const { task_name, description, status, team_name } = req.body;
+  const { task_name, description, status, team_name, due_date } = req.body;
 
   const userId = req.user.userId;
   console.log("Extracted User ID:", userId);
@@ -48,9 +48,10 @@ router.post("/tasks", authenticate, (req, res) => {
     }
 
     const team_id = results[0].team_id;
+    
 
     // Insert the task and get the new task_id
-    db.execute(queryTask, [task_name, description ?? "", status, team_id], (err, results) => {
+    db.execute(queryTask, [task_name, description ?? "", status, team_id, due_date], (err, results) => {
       if (err) {
         console.error("Database error:", err);
         return res.status(500).json({ error: "Database error", details: err });

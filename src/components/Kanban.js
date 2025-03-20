@@ -68,7 +68,7 @@ function Kanban() {
       .then((response) => response.json())
       .then(() => {
         fetchTasks(); // Refresh tasks after adding
-        setNewTask({ task_name: "", description: "", status: "pending", team_name: "" });
+        setNewTask({ task_name: "", description: "", status: "pending", team_name: "", due_date: "" });
       })
       .catch((error) => console.error("Error adding task:", error));
   };
@@ -208,6 +208,22 @@ function Kanban() {
             sx={{
               backgroundColor: "white",
               borderRadius: "8px",
+            }}
+          />
+          <TextField
+            label="Due date"
+            type="Date"
+            variant="outlined"
+            value={newTask.due_date}
+            onChange={(e) =>
+              setNewTask({ ...newTask, due_date: e.target.value })
+            }
+            sx={{
+              backgroundColor: "white",
+              borderRadius: "8px",
+            }}
+            InputLabelProps={{
+              shrink: true,
             }}
           />
           <Button
