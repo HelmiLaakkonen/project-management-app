@@ -25,6 +25,8 @@ export default function TeamsList() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [teamToDelete, setTeamToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [newMember, setNewMember] = useState("");
+  const [addingMember, setAddingMember] = useState(false);
 
   useEffect(() => {
     fetchTeams();
@@ -131,6 +133,35 @@ export default function TeamsList() {
         setDeleting(false);
       });
   };
+  const handleAddMember = () => {
+    if (!newMember.trim() || !selectedTeam) return;
+
+    setAddingMember(true);
+    const token = localStorage.getItem("token");
+
+    fetch(`http://localhost:3000/api/teams/${selectedTeam}/add-member`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username: newMember }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setTeamMembers([...teamMembers, { username: newMember }]);
+          setNewMember("");
+        } else {
+          console.error("Error adding member:", data.error);
+        }
+        setAddingMember(false);
+      })
+      .catch((error) => {
+        console.error("Error adding member:", error);
+        setAddingMember(false);
+      });
+  };
 
   return (
     <Box
@@ -231,6 +262,42 @@ export default function TeamsList() {
                         No members found.
                       </Typography>
                     )}
+                  </Box>
+                )}
+                {/* Add Member Section */}
+                {selectedTeam === team.team_id && (
+                  <Box sx={{ pl: 3, mt: 2 }}>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{ fontWeight: "bold", color: "#b80d57" }}
+                    >
+                      Add Member:
+                    </Typography>
+                    <TextField
+                      label="Username"
+                      variant="outlined"
+                      size="small"
+                      value={newMember}
+                      onChange={(e) => setNewMember(e.target.value)}
+                      sx={{
+                        mt: 1,
+                        backgroundColor: "white",
+                        borderRadius: "8px",
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      sx={{
+                        ml: 1,
+                        mt: 1,
+                        backgroundColor: "#f48fb1",
+                        color: "white",
+                      }}
+                      onClick={handleAddMember}
+                      disabled={addingMember}
+                    >
+                      {addingMember ? "Adding..." : "Add"}
+                    </Button>
                   </Box>
                 )}
               </Box>

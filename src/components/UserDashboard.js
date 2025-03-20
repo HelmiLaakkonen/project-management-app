@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Grid2, Typography, Box } from "@mui/material";
 import Profile from "./Profile";
-import Teams from "./Teams";
+import TeamsList from "./Teams";
 
 export default function UserDashboard() {
   return (
@@ -59,7 +59,7 @@ export default function UserDashboard() {
               justifyContent: "space-between",
             }}
           >
-            <Teams />
+            <TeamsList />
           </Box>
         </Grid2>
       </Grid2>
