@@ -148,6 +148,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Calender />
             </Layout>
@@ -165,6 +166,7 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
               <Roadmap />
             </Layout>
@@ -183,8 +185,45 @@ function App() {
               toggleSidebar={toggleSidebar}
               notificationsOpen={notificationsOpen}
               toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
             >
-              <UserDashboard />
+              <Notifications />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          isAuthenticated ? (
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
+            >
+              <Profile />
+            </Layout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/teams"
+        element={
+          isAuthenticated ? (
+            <Layout
+              sidebarOpen={sidebarOpen}
+              toggleSidebar={toggleSidebar}
+              notificationsOpen={notificationsOpen}
+              toggleNotifications={toggleNotifications}
+              setAuth={setIsAuthenticated}
+            >
+              <Teams />
             </Layout>
           ) : (
             <Navigate to="/login" />
