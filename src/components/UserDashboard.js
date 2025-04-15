@@ -21,8 +21,8 @@ export default function UserDashboard() {
         spacing={2}
         sx={{
           width: "100%",
-          alignItems: "stretch", // Ensures both sections stretch equally
-          flexWrap: "nowrap", // Prevents wrapping
+          alignItems: "stretch", 
+          flexWrap: "nowrap", 
         }}
       >
         {/* Profile Section (Left) */}
@@ -44,7 +44,7 @@ export default function UserDashboard() {
           </Box>
         </Grid2>
 
-        {/* Teams Section (Right) - No Background Card */}
+        {/* Teams Section (Right) */}
         <Grid2
           item
           xs={12}
