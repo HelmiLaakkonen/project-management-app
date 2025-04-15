@@ -12,12 +12,12 @@ const fontStyle = {
   fontFamily: `"Poppins", sans-serif`, // Elegant, rounded font
 };
 
-// ✅ Custom Day Component - **Wrap Date in Box with Red Dot**
+// Custom Day Component
 function CustomDay(props) {
   const { day, tasks, selected, ...other } = props;
   const formattedDate = day.format("YYYY-MM-DD");
 
-  // ✅ Check if this day has tasks
+  // Check if this day has tasks
   const hasTask = tasks.includes(formattedDate);
 
   return (
@@ -35,7 +35,6 @@ function CustomDay(props) {
           fontFamily: `"Poppins", sans-serif`,
         }}
       />
-      {/* ✅ Guaranteed Red Dot */}
       {hasTask && (
         <Box
           sx={{
@@ -70,7 +69,7 @@ function Calendar() {
         const response = await fetch("http://localhost:3000/api/tasks", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ Ensure token is sent
+            Authorization: `Bearer ${token}`, // Ensure token is sent
             "Content-Type": "application/json",
           },
         });
@@ -90,7 +89,7 @@ function Calendar() {
     fetchTasks();
   }, []);
 
-  // ✅ Extract unique task creation dates
+  // Extract unique task creation dates
   const taskDates = [
     ...new Set(
       tasks.map((task) => dayjs.utc(task.created_at).format("YYYY-MM-DD"))
