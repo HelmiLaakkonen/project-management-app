@@ -54,7 +54,7 @@ function Kanban() {
     fetchTasks();
   }, [fetchTasks]);
 
-  // ✅ Add new task
+  // Add new task
   const handleAddTask = () => {
     if (!newTask.task_name) return;
     const token = localStorage.getItem("token");
@@ -81,7 +81,7 @@ function Kanban() {
       .catch((error) => console.error("Error adding task:", error));
   };
 
-  // ✅ Handle drag-and-drop movement of tasks
+  // Handle drag-and-drop movement of tasks
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -113,7 +113,7 @@ function Kanban() {
     movedTask.status = newStatus;
     setTasks(updatedTasks);
 
-    // ✅ Update status in the database
+    // Update status in the database
     const token = localStorage.getItem("token");
     fetch(`http://localhost:3000/api/tasks/${movedTask.task_id}`, {
       method: "PUT",
@@ -133,7 +133,7 @@ function Kanban() {
       .catch((error) => console.error("❌ Error updating task status:", error));
   };
 
-  // ✅ Styling (More Compact)
+  // Styling (More Compact)
   const Item = styled(Paper)(({ status }) => ({
     backgroundColor:
       status === "pending"
