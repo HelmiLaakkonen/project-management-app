@@ -56,19 +56,19 @@ function Roadmap() {
     fetchTasks();
   }, []);
 
-  // ✅ Extract unique task due dates (for roadmap tasks)
+  // Extract unique task due dates (for roadmap tasks)
   const upcomingTasks = tasks
     .filter((task) => task.due_date && dayjs(task.due_date).isAfter(dayjs()))
     .sort((a, b) => dayjs(a.due_date).diff(dayjs(b.due_date))); // Sort by due date
 
-  // ✅ Extract task creation dates for the calendar
+  // Extract task creation dates for the calendar
   const taskDates = [
     ...new Set(
       tasks.map((task) => dayjs.utc(task.created_at).format("YYYY-MM-DD"))
     ),
   ];
 
-  // ✅ Get tasks for the selected calendar date
+  // Get tasks for the selected calendar date
   const tasksForSelectedDate = tasks.filter(
     (task) =>
       dayjs.utc(task.created_at).format("YYYY-MM-DD") ===
